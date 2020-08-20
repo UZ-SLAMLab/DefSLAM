@@ -5,7 +5,7 @@ DefSLAM is a real-time deformable SLAM library for **Monocular** cameras that co
 
 [![](https://img.youtube.com/vi/6mmhD2_t6Gs/0.jpg)](https://www.youtube.com/watch?v=6mmhD2_t6Gs&t=3s)
 
-
+Find more videos of experiments here: https://www.youtube.com/playlist?list=PLKBuKNhAV30SlKGJ9eaMlAExdWRypUy-K
 ### Related Publications:
 [Lamarca, Jose, et al. "DefSLAM: Tracking and Mapping of Deforming Scenes from Monocular Sequences." arXiv preprint arXiv:1908.08918 (2019).](https://arxiv.org/abs/1908.08918)
 ```
