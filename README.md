@@ -78,9 +78,9 @@ It contains the five sequences presented in the paper. The mandala deformation b
 
 The dataset is organized as follows:
 ```
---Mandala(i)
+-- yalm file
+-- Mandala(i)
    -- images
-   -- yalm file
    -- times
 ```
 ## Hamlyn dataset  
