@@ -170,19 +170,11 @@ namespace defSLAM
         EraseTemporalPoints();
 
 // Check if we need to insert a new keyframe
-#ifdef PARALLEL
-        // Insert keyframe always that the mapping is free
-        if (mpLocalMapper->AcceptKeyFrames())
-        {
-          this->CreateNewKeyFrame();
-        }
-#else
         if ((mCurrentFrame->mnId % 10) < 1)
         {
           this->CreateNewKeyFrame();
         }
-#endif
-
+        
         // We allow points with high innovation (considererd outliers by the Huber
         // Function) pass to the new keyframe, so that bundle adjustment will
         // finally decide if they are outliers or not. We don't want next frame to
