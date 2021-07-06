@@ -39,7 +39,7 @@ We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload an
 Required by g2o (see below). Download and install instructions can be found at: http://eigen.tuxfamily.org. **Required at least 3.1.0**.
 
 # Ceres library:
-We use [Ceres](http://opencv.org) to optimize warp and to run the NRSfM.
+We use [Ceres](http://ceres-solver.org/installation.html) to optimize warp and to run the NRSfM.
 
 ## PCL
 It is used just for ground truths. It is not critic for the program. We use [PCL](https://pointclouds.org/downloads/) mainly for groundtruths.
