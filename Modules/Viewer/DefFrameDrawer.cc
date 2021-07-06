@@ -27,6 +27,7 @@
 
 #include <mutex>
 #include <opencv2/core/eigen.hpp>
+#include <set>
 
 namespace defSLAM
 {
@@ -78,7 +79,7 @@ namespace defSLAM
     std::unique_lock<std::mutex> M(
         static_cast<DefMap *>(mpMap)->MutexUpdating);
 
-    if ((mTcw.rows == 4) and (mTcw.cols == 4) and (mK.rows == 3) and
+    if ((mTcw.rows == 4) && (mTcw.cols == 4) && (mK.rows == 3) &&
         (mK.cols == 3))
     {
 
@@ -88,7 +89,7 @@ namespace defSLAM
       vector<cv::Point3f> Nodes3d;
       vector<cv::Point2f> Nodes2d;
       int i(0);
-      std::map<uint, uint> M;
+      std::map<unsigned int, unsigned int> M;
       std::vector<Node *> VecNodes;
       for (std::set<Node *>::iterator it = Nodes.begin(); it != Nodes.end();
            it++)
@@ -112,10 +113,10 @@ namespace defSLAM
       for (std::set<Edge *>::iterator ite = Edges.begin(); ite != Edges.end();
            ite++)
       {
-        std::pair<uint, uint> mo = (*ite)->getPairNodes();
+        std::pair<unsigned int, unsigned int> mo = (*ite)->getPairNodes();
         cv::Scalar S1, S2;
-        uint a = M[mo.first];
-        uint b = M[mo.second];
+        unsigned int a = M[mo.first];
+        unsigned int b = M[mo.second];
         Node *n1 = VecNodes[a];
         Node *n2 = VecNodes[b];
 
@@ -160,10 +161,10 @@ namespace defSLAM
 
         try
         {
-          if (((Nodes2d[a].x > 0) and (Nodes2d[a].y > 0) and
-               (Nodes2d[a].x < im.cols) and (Nodes2d[a].y < im.rows)) or
-              ((Nodes2d[b].x > 0) and (Nodes2d[b].y > 0) and
-               (Nodes2d[b].x < im.cols) and (Nodes2d[b].y < im.rows)))
+          if (((Nodes2d[a].x > 0) && (Nodes2d[a].y > 0) &&
+               (Nodes2d[a].x < im.cols) && (Nodes2d[a].y < im.rows)) ||
+              ((Nodes2d[b].x > 0) && (Nodes2d[b].y > 0) &&
+               (Nodes2d[b].x < im.cols) && (Nodes2d[b].y < im.rows)))
             line2(im, Nodes2d[a], Nodes2d[b], S1, S2);
           //         cv::line(im,Nodes2d[a],Nodes2d[b],cv::Scalar(15,15,155),1);
         }

@@ -235,7 +235,7 @@ namespace ORB_SLAM2
       PointsGT.push_back(stereo_w.at<float>(1));
       PointsGT.push_back(stereo_w.at<float>(2));
     }
-    for (uint i(0); i < AllMapPoints.size(); i++)
+    for (unsigned int i(0); i < AllMapPoints.size(); i++)
     {
       MapPoint *pMP = AllMapPoints[i];
       if (!pMP)

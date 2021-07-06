@@ -201,7 +201,7 @@ namespace defSLAM
       posStereo_.reserve(posStereoInit_.size());
       if (notOutliers.size() < 20)
         return 1;
-      for (uint i(0); i < notOutliers.size(); i++)
+      for (unsigned int i(0); i < notOutliers.size(); i++)
       {
         posMono_.push_back(posMonoInit_[notOutliers[i]]);
         posStereo_.push_back(posStereoInit_[notOutliers[i]]);
@@ -257,7 +257,7 @@ namespace defSLAM
               << posMono_.size() << std::endl;
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
-        << uint(this->mTimeStamp);
+        << (unsigned int)(this->mTimeStamp);
     std::string name("ErrorGTs" + out.str() + ".txt");
     GroundTruthTools::saveResults(Error, name);
     return acc * invc;

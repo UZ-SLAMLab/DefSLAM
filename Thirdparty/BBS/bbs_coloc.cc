@@ -73,21 +73,21 @@ namespace BBS
     return 1.0 / (pow(su, uorder) * pow(sv, vorder));
   }
 
-  void colocEigen(bbs_t *bbs, double *u, double *v, int nsites,
+  void colocEigen(bbs_t *bbs, std::vector<double>& u, std::vector<double>& v, int nsites,
                   Eigen::MatrixXd &colocMatrix)
   {
     int k, iu, iv, col, Iu, Iv;
-    double nu[nsites];
-    double nv[nsites];
-    int interu[nsites];
-    int interv[nsites];
+    std::vector<double> nu(nsites);
+    std::vector<double> nv(nsites);
+    std::vector<int> interu(nsites);
+    std::vector<int> interv(nsites);
     double basis_u[4];
     double basis_v[4];
     int npts = bbs->nptsu * bbs->nptsv;
 
-    size_t nb_elem_col[npts];
-    size_t cur_ind[npts];
-    size_t jc[npts];
+    std::vector<size_t> nb_elem_col(npts);
+    std::vector<size_t> cur_ind(npts);
+    std::vector<size_t> jc(npts);
     jc[0] = 0;
     // Compute the normalized evaluation values and their interval numbers
     std::cout << bbs->umin << "  " << bbs->umax << " " << bbs->vmin;
@@ -136,24 +136,24 @@ namespace BBS
     }
   }
 
-  int coloc_derivEigen(bbs_t *bbs, double *u, double *v, int nsites, int du,
+  int coloc_derivEigen(bbs_t *bbs, std::vector<double>& u, std::vector<double>& v, int nsites, int du,
                        int dv, Eigen::MatrixXd &colocMatrix)
   {
     int k, iu, iv, col, Iu, Iv;
     int ret_code = 0;
-    double nu[nsites];
-    double nv[nsites];
-    int interu[nsites];
-    int interv[nsites];
+    std::vector<double> nu(nsites);
+    std::vector<double> nv(nsites);
+    std::vector<int> interu(nsites);
+    std::vector<int> interv(nsites);
     basis_func_t b_func_u = get_basis_ptr_e(du);
     basis_func_t b_func_v = get_basis_ptr_e(dv);
     double fact = get_deriv_fact_e(bbs, du, dv);
     double basis_u[4];
     double basis_v[4];
     int npts = bbs->nptsu * bbs->nptsv;
-    size_t nb_elem_col[npts];
-    size_t cur_ind[npts];
-    double jc[npts];
+    std::vector < size_t> nb_elem_col(npts);
+    std::vector < size_t> cur_ind(npts);
+    std::vector<double> jc(npts);
     jc[0] = 0;
     nb_elem_col[0] = 0;
     // double ir[npts];
@@ -411,12 +411,12 @@ namespace BBS
     int nx = bbs->nptsv;
     int i(0), j(0), a(0), b(0), c(0), d(0), e1(0), f1(0), e2(0), f2(0), curnb(0),
         total(0), ind(0), sb(0), nb(0);
-    double pr[bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv];
-    size_t ir[bbs->nptsu * bbs->nptsv];
-    size_t jc[bbs->nptsu * bbs->nptsv];
+    std::vector<double> pr(bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv);
+    std::vector <size_t> ir(bbs->nptsu * bbs->nptsv);
+    std::vector <size_t> jc(bbs->nptsu * bbs->nptsv);
 
-    size_t *pi = ir, *pp = jc;
-    double *px = pr;
+    size_t *pi = &ir[0], *pp = &jc[0];
+    double *px = &pr[0];
     double coeff_b[256];
     double lbd;
     double sy = (bbs->umax - bbs->umin) / (bbs->nptsu - 3);
@@ -467,8 +467,8 @@ namespace BBS
     // Put the right coefficients at the right locations (one knot domain at a
     // time
     // and with the scaling given by lambda)
-    pp = jc;
-    px = pr;
+    pp = &jc[0];
+    px = &pr[0];
     for (b = 0; b < ny - 3; ++b)
     {
       for (a = 0; a < nx - 3; ++a)
@@ -512,12 +512,12 @@ namespace BBS
                          // version of the code
     int nx = bbs->nptsv;
     int i, j, a, b, c, d, e1, f1, e2, f2, curnb, total, ind, sb, nb;
-    double pr[bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv];
-    size_t ir[bbs->nptsu * bbs->nptsv];
-    size_t jc[bbs->nptsu * bbs->nptsv];
+    std::vector<double> pr(bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv);
+    std::vector < size_t> ir(bbs->nptsu * bbs->nptsv);
+    std::vector < size_t> jc(bbs->nptsu * bbs->nptsv);
 
-    size_t *pi = ir, *pp = jc;
-    double *px = pr;
+    size_t *pi = &ir[0], *pp = &jc[0];
+    double *px = &pr[0];
     double coeff_b[256];
     double lbd;
     double sy = (bbs->umax - bbs->umin) / (bbs->nptsu - 3);
@@ -568,8 +568,8 @@ namespace BBS
     // Put the right coefficients at the right locations (one knot domain at a
     // time
     // and with the scaling given by lambda)
-    pp = jc;
-    px = pr;
+    pp = &jc[0];
+    px = &pr[0];
     for (b = 0; b < ny - 3; ++b)
     {
       for (a = 0; a < nx - 3; ++a)
@@ -607,19 +607,19 @@ namespace BBS
     }
   }
   /* Pointer type for a basis function evaluation */
-  void EvalEigen(bbs_t *bbs, const double *ctrlpts, double *u, double *v,
-                 int nsites, Eigen::MatrixXd &val, int du, int dv)
+  void EvalEigen(bbs_t *bbs, const std::vector<double>& ctrlpts, std::vector<double>& u, std::vector<double>& v,
+                 int nval, Eigen::MatrixXd &val, int du, int dv)
   {
-    double nu[nsites];
-    double nv[nsites];
-    int interu[nsites];
-    int interv[nsites];
+    std::vector<double> nu(nval);
+    std::vector<double> nv(nval);
+    std::vector<int> interu(nval);
+    std::vector<int> interv(nval);
     // Compute the normalized evaluation values and their interval numbers
-    normalize_with_inter(bbs->umin, bbs->umax, bbs->nptsu, u, nsites, nu, interu);
-    normalize_with_inter(bbs->vmin, bbs->vmax, bbs->nptsv, v, nsites, nv, interv);
+    normalize_with_inter(bbs->umin, bbs->umax, bbs->nptsu, u, nval, nu, interu);
+    normalize_with_inter(bbs->vmin, bbs->vmax, bbs->nptsv, v, nval, nv, interv);
 
 #pragma omp parallel for num_threads(NTHREADS), schedule(guided)
-    for (int k = 0; k < nsites; ++k)
+    for (int k = 0; k < nval; ++k)
     {
       int iu, iv, d, ind;
       double basis_u[4];

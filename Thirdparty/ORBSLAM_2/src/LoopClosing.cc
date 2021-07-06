@@ -30,7 +30,7 @@
 
 #include <mutex>
 #include <thread>
-#include <unistd.h>
+//#include <unistd.h>
 
 namespace ORB_SLAM2
 {
@@ -79,7 +79,7 @@ namespace ORB_SLAM2
             if (CheckFinish())
                 break;
 
-            usleep(5000);
+            this_thread::sleep_for(chrono::microseconds(5000));
         }
 
         SetFinish();
@@ -421,7 +421,7 @@ namespace ORB_SLAM2
         // Wait until Local Mapping has effectively stopped
         while (!mpLocalMapper->isStopped())
         {
-            usleep(1000);
+            this_thread::sleep_for(chrono::microseconds(1000));
         }
 
         // Ensure current keyframe is updated
@@ -619,7 +619,7 @@ namespace ORB_SLAM2
                 if (!mbResetRequested)
                     break;
             }
-            usleep(5000);
+            this_thread::sleep_for(chrono::microseconds(5000));
         }
     }
 
@@ -659,7 +659,7 @@ namespace ORB_SLAM2
 
                 while (!mpLocalMapper->isStopped() && !mpLocalMapper->isFinished())
                 {
-                    usleep(1000);
+                    this_thread::sleep_for(chrono::microseconds(1000));
                 }
 
                 // Get Map Mutex

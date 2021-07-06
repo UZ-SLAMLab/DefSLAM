@@ -72,7 +72,7 @@ namespace defSLAM
   double Edge::getDist() { return InitialDist; }
 
   // Get index of the nodes in the edge
-  std::pair<uint, uint> Edge::getPairNodes()
+  std::pair<unsigned int, unsigned int> Edge::getPairNodes()
   {
     return {mNodes[0]->getIndex(), mNodes[1]->getIndex()};
   }
@@ -107,9 +107,9 @@ namespace defSLAM
   // compare this edge against another edge of the same class
   bool Edge::operator==(const Edge &OtherEdge)
   {
-    bool b1 = (this->mNodes[0] == OtherEdge.mNodes[0]) or
+    bool b1 = (this->mNodes[0] == OtherEdge.mNodes[0]) ||
               (this->mNodes[0] == OtherEdge.mNodes[1]);
-    bool b2 = (this->mNodes[1] == OtherEdge.mNodes[0]) or
+    bool b2 = (this->mNodes[1] == OtherEdge.mNodes[0]) ||
               (this->mNodes[1] == OtherEdge.mNodes[1]);
     return b1 && b2;
   }
@@ -117,8 +117,8 @@ namespace defSLAM
   // See if this edge links the nodes v1 and v2.
   bool Edge::isEqual(const Node *v1, const Node *v2)
   {
-    bool b1 = (this->mNodes[0] == v1) or (this->mNodes[0] == v2);
-    bool b2 = (this->mNodes[1] == v1) or (this->mNodes[1] == v2);
+    bool b1 = (this->mNodes[0] == v1) || (this->mNodes[0] == v2);
+    bool b2 = (this->mNodes[1] == v1) || (this->mNodes[1] == v2);
     return b1 && b2;
   }
 } // namespace defSLAM

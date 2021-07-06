@@ -40,11 +40,11 @@ namespace defSLAM
     // This function iterates over all the map points checking if they
     // have new observation to reestimate their normals.
 
-    uint nummin(1);
+    unsigned int nummin(1);
     auto &diffDB = WarpDB->getDiffDatabase();
     auto &toProccess = WarpDB->getToProccess();
-    uint counter(0);
-    uint counterPoints(0);
+    unsigned int counter(0);
+    unsigned int counterPoints(0);
 
     for (auto &process : toProccess) // Iteration over map points in WarpDB.
     {

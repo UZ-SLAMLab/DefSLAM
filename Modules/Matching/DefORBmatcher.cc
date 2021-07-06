@@ -56,7 +56,7 @@ namespace defSLAM
 
     this->searchBySchwarp(Kf1, Kf2, x, vMatchedIndices2);
     std::cout << "New points : " << vMatchedIndices2.size() << std::endl;
-    for (uint i(0); i < vMatchedIndices2.size(); i++)
+    for (unsigned int i(0); i < vMatchedIndices2.size(); i++)
     {
       MapPoint *pMP = Kf1->GetMapPoint(vMatchedIndices2[i].first);
       if (pMP)
@@ -104,7 +104,7 @@ namespace defSLAM
       invSigmas.push_back(sqrt(invSigma2));
     }
 
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
          i++)
     {
       x[i] = 0.0;
@@ -114,7 +114,7 @@ namespace defSLAM
     Warps::Warp::initialize(KP1, KP2, lambda, KF->umin, KF->umax, KF->vmin, KF->vmax,
                             KF->NCu, KF->NCv, KF->valdim, x);
 
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
          i++)
     {
       if (std::isnan(x[i]))
@@ -166,7 +166,7 @@ namespace defSLAM
     std::vector<int> listMapPoints;
     std::vector<cv::KeyPoint> lskeypoints;
 
-    for (uint i(0); i < dKF->mpKeypointNorm.size(); i++)
+    for (unsigned int i(0); i < dKF->mpKeypointNorm.size(); i++)
     {
       auto pMP = dKF->GetMapPoint(i);
       if (!pMP)
@@ -189,7 +189,7 @@ namespace defSLAM
     Eigen::Matrix<double, _NumberOfControlPointsU * _NumberOfControlPointsV, 2>
         ControlPointsinitial;
 
-    uint us(0);
+    unsigned int us(0);
     for (int i(0); i < dKF->NCu; i++)
     {
       for (int j(0); j < dKF->NCv; j++)
@@ -210,7 +210,7 @@ namespace defSLAM
         dKF->NCv, dKF->valdim, x, ControlPoints, 0, 0);
 
     // Iterations over the keypoints with map point not assigned in kf1
-    for (uint i(0); i < lskeypoints.size(); i++)
+    for (unsigned int i(0); i < lskeypoints.size(); i++)
     {
       float x = KP2_e[i].pt.x * dKF2->fx + dKF2->cx;
       float y = KP2_e[i].pt.y * dKF2->fy + dKF2->cy;
@@ -224,7 +224,7 @@ namespace defSLAM
       float th = 2;
       const auto &features = dKF2->GetFeaturesInArea(x, y, th);
       // Iterations over the keypoints without map point assigned in kf2
-      for (uint j(0); j < features.size(); j++)
+      for (unsigned int j(0); j < features.size(); j++)
       {
         auto pMP = dKF2->GetMapPoint(features[j]);
         if (pMP)
@@ -269,7 +269,7 @@ namespace defSLAM
     int nmatches = 0;
 
     // Rotation Histogram (to check rotation consistency)
-    vector<int> rotHist[HISTO_LENGTH];
+    vector<vector<int>> rotHist(HISTO_LENGTH, vector<int>());
     for (int i = 0; i < HISTO_LENGTH; i++)
       rotHist[i].reserve(500);
     const float factor = 1.0f / HISTO_LENGTH;
@@ -398,7 +398,7 @@ namespace defSLAM
       int ind2 = -1;
       int ind3 = -1;
 
-      ComputeThreeMaxima(rotHist, HISTO_LENGTH, ind1, ind2, ind3);
+      ComputeThreeMaxima(&rotHist[0], HISTO_LENGTH, ind1, ind2, ind3);
 
       for (int i = 0; i < HISTO_LENGTH; i++)
       {

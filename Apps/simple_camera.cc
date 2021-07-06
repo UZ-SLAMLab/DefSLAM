@@ -4,7 +4,7 @@
 int main(int argc, char **argv)
 {
     std::cout << argc << std::endl;
-    if ((argc != 4) and (argc != 3))
+    if ((argc != 4) && (argc != 3))
     {
         cerr << endl
              << "Usage: ./DefSLAM ORBvocabulary calibrationFile video" << endl
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     // process frames.
     defSLAM::System SLAM(argv[1], argv[2], true);
 
-    uint i(0);
+    unsigned int i(0);
     cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
