@@ -60,6 +60,8 @@ namespace defSLAM
     double SaveResults = fSettings["Viewer.SaveResults"];
     saveResults = bool((unsigned int)SaveResults);
 
+    output_path = fSettings["File.outputdir"];
+
     cout << endl
          << "Defomation tracking Parameters: " << endl;
     cout << "- Reg. Inextensibility: " << RegInex << endl;
@@ -504,7 +506,7 @@ namespace defSLAM
           static_cast<GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {
@@ -565,7 +567,7 @@ namespace defSLAM
           static_cast<GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {

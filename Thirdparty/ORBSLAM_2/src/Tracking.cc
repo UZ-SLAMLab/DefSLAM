@@ -57,8 +57,12 @@ namespace ORB_SLAM2
         mpMap(pMap), mnLastRelocFrameId(0),
         viewerOn(viewerOn)
   {
-    // Load camera parameters from settings file
+    
+    
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
+	// Load output dir
+	output_path = fSettings["File.outputdir"];
+    // Load camera parameters from settings file
     float fx = fSettings["Camera.fx"];
     float fy = fSettings["Camera.fy"];
     float cx = fSettings["Camera.cx"];
@@ -143,8 +147,8 @@ namespace ORB_SLAM2
     cout << "- Scale Factor: " << fScaleFactor << endl;
     cout << "- Initial Fast Threshold: " << fIniThFAST << endl;
     cout << "- Minimum Fast Threshold: " << fMinThFAST << endl;
-    matches.open("Matches.txt");
-    scalefile.open("ScaleVariation.txt");
+    matches.open(output_path+"/Matches.txt");
+    scalefile.open(output_path+"/ScaleVariation.txt");
     if (sensor == System::STEREO || sensor == System::RGBD)
     {
       mThDepth = mbf * (float)fSettings["ThDepth"] / fx;
@@ -160,7 +164,7 @@ namespace ORB_SLAM2
       else
         mDepthMapFactor = 1.0f / mDepthMapFactor;
     }
-    MapPointFile.open("MapPointUsage.txt");
+    MapPointFile.open(output_path+"/MapPointUsage.txt");
   }
 
   void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -382,7 +386,7 @@ namespace ORB_SLAM2
                   mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)
-          ->Estimate3DError(mpMap, scale);
+          ->Estimate3DError(mpMap, scale, output_path);
       mpMapDrawer->UpdatePoints(mCurrentFrame, scale);
     }
     return mCurrentFrame->mTcw.clone();
@@ -435,7 +439,7 @@ namespace ORB_SLAM2
           static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {

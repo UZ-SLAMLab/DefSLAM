@@ -30,6 +30,7 @@
 #include <pangolin/pangolin.h>
 //#include <unistd.h>
 
+
 namespace defSLAM
 {
   //Constructor.
@@ -43,6 +44,8 @@ namespace defSLAM
     RegLap = fSettings["Regularizer.laplacian"];
     RegInex = fSettings["Regularizer.Inextensibility"];
     RegTemp = fSettings["Regularizer.temporal"];
+    output_path = fSettings["File.outputdir"];
+    
   }
 
   // Main thread function. Draw points, keyframes, the current camera pose and the last processed
@@ -175,7 +178,7 @@ namespace defSLAM
         std::ostringstream out;
         out << std::internal << std::setfill('0') << std::setw(5)
             << (unsigned int)(timestamp);
-        d_cam1.SaveOnRender("3D" + out.str());
+        d_cam1.SaveOnRender(output_path + "/3D" + out.str());
       }
       cv::Mat im = mpFrameDrawer->DrawFrame();
       if (!im.empty())
@@ -185,7 +188,7 @@ namespace defSLAM
           std::ostringstream out;
           out << std::internal << std::setfill('0') << std::setw(5)
               << (unsigned int)(timestamp);
-          cv::imwrite("2D" + out.str() + ".png", im);
+          cv::imwrite(output_path + "/2D" + out.str() + ".png", im);
         }
         cv::imshow("DefSLAM: Current Frame", im);
         cv::waitKey(10);
