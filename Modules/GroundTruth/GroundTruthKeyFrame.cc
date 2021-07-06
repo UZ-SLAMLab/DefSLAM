@@ -88,7 +88,7 @@ namespace defSLAM
       for (unsigned int i(0); i < 3; i++)
         PosMat.at<float>(i) = pos(i);
 
-      pos(3) = 1;
+      PosMat.at<float>(3) = 1;
 
       cv::KeyPoint kp = this->mvKeysUn[i];
 

@@ -70,6 +70,37 @@ namespace defSLAM
                            vMatchedIndices2.end());
   }
 
+
+  // from https://codereview.stackexchange.com/questions/206686/removing-by-indices-several-elements-from-a-vector
+  template <typename T, typename Iter>
+  void removeIndicesFromVector(std::vector<T>& v, Iter begin, Iter end)
+      // requires std::is_convertible_v<std::iterator_traits<Iter>::value_type, std::size_t>
+  {
+      assert(std::is_sorted(begin, end));
+      auto rm_iter = begin;
+      std::size_t current_index = 0;
+
+      const auto pred = [&](const T&) {
+          // any more to remove?
+          if (rm_iter == end) { return false; }
+          // is this one specified?
+          if (*rm_iter == current_index++) { return ++rm_iter, true; }
+          return false;
+      };
+
+      v.erase(std::remove_if(v.begin(), v.end(), pred), v.end());
+  }
+
+  template <typename T, typename S>
+  // requires std::is_convertible_v<S::value_type, std::size_t>
+  void removeIndicesFromVector(std::vector<T>& v, const S& rm)
+  {
+      using std::begin;
+      using std::end;
+      assert(std::is_sorted(begin(rm), end(rm)));
+      return removeIndicesFromVector(v, begin(rm), end(rm));
+  }
+
   /*********************
   * Initialize a warp and make a refinement with the Schwarzian equation
   * to search for map points. HERE IS INITIALIZED THE WARP. IF YOU DO NOT
@@ -136,7 +167,7 @@ namespace defSLAM
     problem.Evaluate(optionsEv, &total_cost, &residuals, nullptr, nullptr);
     std::vector<size_t> outliers;
     // Remove points that bad predicted by the Warp.
-    for (size_t i(0); i < vMatchedIndices.size(); i++)
+    for (size_t i= 0 ; i < vMatchedIndices.size(); i++)
     {
       double error = residuals[2 * i] * residuals[2 * i] +
                      residuals[2 * i + 1] * residuals[2 * i + 1];
@@ -145,13 +176,14 @@ namespace defSLAM
         outliers.push_back(i);
       }
     }
-
-    for (auto i : outliers)
+    sort(outliers.begin(), outliers.end());
+    for (size_t i : outliers)
     {
       const auto idx2 = vMatchedIndices[i].second;
       KF2->EraseMapPointMatch(idx2);
-      vMatchedIndices.erase(vMatchedIndices.begin() + i);
+      //vMatchedIndices.erase(vMatchedIndices.begin() + i);
     }
+    removeIndicesFromVector(vMatchedIndices, outliers);
   }
 
   // It use the result of the schwarzian warp to search for map points.

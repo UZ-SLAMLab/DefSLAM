@@ -114,7 +114,7 @@ namespace BBS
     }
 
     // Second, compute jc from nb_elem_col
-    for (k = 1; k <= npts; ++k)
+    for (k = 1; k < npts; ++k)
       jc[k] = jc[k - 1] + nb_elem_col[k - 1];
 
     // FILLING pr and ir
@@ -181,7 +181,7 @@ namespace BBS
     }
 
     // Second, compute jc from nb_elem_col
-    for (k = 1; k <= npts; ++k)
+    for (k = 1; k < npts; ++k)
       jc[k] = jc[k - 1] + nb_elem_col[k - 1];
 
     // FILLING pr and ir
@@ -412,11 +412,12 @@ namespace BBS
     int i(0), j(0), a(0), b(0), c(0), d(0), e1(0), f1(0), e2(0), f2(0), curnb(0),
         total(0), ind(0), sb(0), nb(0);
     std::vector<double> pr(bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv);
-    std::vector <size_t> ir(bbs->nptsu * bbs->nptsv);
-    std::vector <size_t> jc(bbs->nptsu * bbs->nptsv);
+    std::vector <size_t> ir(bbs->nptsu * bbs->nptsv * bbs->nptsu * bbs->nptsv);   // factor 10 because original function writes out of bounds grrr....
+    std::vector <size_t> jc(bbs->nptsu * bbs->nptsv*10);
 
-    size_t *pi = &ir[0], *pp = &jc[0];
-    double *px = &pr[0];
+    std::vector <size_t>::iterator pi = ir.begin();
+    std::vector <size_t>::iterator pp = jc.begin();
+    std::vector <double>::iterator px = pr.begin();
     double coeff_b[256];
     double lbd;
     double sy = (bbs->umax - bbs->umin) / (bbs->nptsu - 3);
@@ -433,7 +434,7 @@ namespace BBS
         for (b = max(j - 3, 0); b <= j - 1; ++b)
           for (a = max(0, i - 3); a <= min(nx - 1, i + 3); ++a)
           {
-            *pi = b * nx + a;
+            *pi = (size_t)(b * nx + a);
             *px = 0.0;
             ++pi;
             ++px;
@@ -442,7 +443,7 @@ namespace BBS
 
         for (a = max(0, i - 3); a <= i; ++a)
         {
-          *pi = j * nx + a;
+          *pi = (size_t)(j * nx + a);
           *px = 0.0;
           ++pi;
           ++px;
@@ -467,8 +468,8 @@ namespace BBS
     // Put the right coefficients at the right locations (one knot domain at a
     // time
     // and with the scaling given by lambda)
-    pp = &jc[0];
-    px = &pr[0];
+    //pp = &jc[0];
+    ///px = &pr[0];
     for (b = 0; b < ny - 3; ++b)
     {
       for (a = 0; a < nx - 3; ++a)
@@ -486,19 +487,18 @@ namespace BBS
             j = (b + e2) * nx + a + f2;
             nb = i / nx - max(j / nx - 3, 0);
             sb = min(min(4 + (j % nx), 3 + nx - (j % nx)), min(nx, 7));
-            px[pp[j] + nb * sb + (i % nx) - max((j % nx) - 3, 0)] +=
-                lbd * coeff_b[16 * d + c];
+            //size_t  indx = 
+            size_t indx = jc[j] + nb * sb + (i % nx) - max((j % nx) - 3, 0);
+            pr[indx] += lbd * coeff_b[16 * d + c];
             if (i == j)
             {
               benMatrix.coeffRef(i, i) =
-                  px[pp[j] + nb * sb + (i % nx) - max((j % nx) - 3, 0)];
+                  pr[indx];
             }
             else
             {
-              benMatrix.coeffRef(i, j) =
-                  px[pp[j] + nb * sb + (i % nx) - max((j % nx) - 3, 0)];
-              benMatrix.coeffRef(j, i) =
-                  px[pp[j] + nb * sb + (i % nx) - max((j % nx) - 3, 0)];
+              benMatrix.coeffRef(i, j) = pr[indx];
+              benMatrix.coeffRef(j, i) = pr[indx];
             }
           }
         }
