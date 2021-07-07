@@ -1,3 +1,4 @@
+from operator import matmul
 import os
 import yaml
 #import cv2
@@ -128,6 +129,7 @@ def runDefSLAM(iternumber, params):
     orb_voc_path = r"C:\workspace\ubuntu\DefSLAM\Vocabulary\ORBvoc.txt"
     output_dir, input_yml_path = getYAML(iternumber, K=params)
     input_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
+    os.chdir(input_path)
     input_path_image = os.path.join(input_path + r"\images")
     input_path_time = os.path.join(input_path + r"\timestamps\timestamps_short.txt")
     exe_str = execution_path
@@ -153,26 +155,31 @@ def twiddle(eval, K, dK, path=""):
     twiddle_state = TwiddleState.start
     iter_number = 0
     optimization_value_best = eval(iter_number, K)
+    weights = np.diag(1.0/dK)
+
     K[opt_dim] = K[opt_dim] + dK[opt_dim]
-       
-    stop_norm = np.linalg.norm(dK)*0.1
     
-    while (np.linalg.norm(dK) > stop_norm and iter_number<max_it ):
+    stop_norm = 0.01
+    
+    while (np.linalg.norm(np.matmul(weights,dK)) > stop_norm and iter_number<max_it ):
         iter_number= iter_number+1
         optimization_value = eval(iter_number, K)
         if(path==""):
+            print("Iteration:" , iter_number, ", ")
             print("Current state vector : ", K.T ,", ")
+            print("Current value left : ", np.linalg.norm(np.matmul(weights,dK)) ,", ")
             print("Current derivative: " , dK.T, ", ")
             print("Current best:" , optimization_value_best, ", current: ", optimization_value)
-            print("Iteration best:" , iter_number, ", ")
+            
         else:
             original_stdout = sys.stdout
             with open(path, 'a') as f:
                 sys.stdout = f
+                print("Iteration:" , iter_number, ", ")
                 print("Current state vector : ", K.T ,", ")
                 print("Current derivative: " , dK.T, ", ")
                 print("Current best:" , optimization_value_best, ", current: ", optimization_value)
-                print("Iteration best:" , iter_number, ", ")
+                
                 sys.stdout = original_stdout
 
         if twiddle_state ==  TwiddleState.start:
@@ -198,7 +205,7 @@ def testTwiddle():
     def testEvalFunction( iter, K):
         return np.linalg.norm(K)
     K=np.array([1.0,2.0,3.0])
-    dK=np.array([0.1,0.2,0.1])
+    dK=np.array([0.1,0.2,1000])
     
     twiddle(testEvalFunction, K, dK)
 testTwiddle()
