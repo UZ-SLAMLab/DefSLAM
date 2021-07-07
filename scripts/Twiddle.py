@@ -6,6 +6,7 @@ import numpy as np
 from shutil import copyfile
 from enum import Enum
 import pandas as pd
+import sys
 
 
 def getYAML(iternumber, K):
@@ -145,7 +146,7 @@ class TwiddleState(Enum):
     change = 0
     start = 1
 
-def twiddle(eval, K, dK):
+def twiddle(eval, K, dK, path=""):
     max_it = 100
     opt_dim = 0
     sizeParam = K.shape[0]
@@ -159,10 +160,21 @@ def twiddle(eval, K, dK):
     while (np.linalg.norm(dK) > stop_norm and iter_number<max_it ):
         iter_number= iter_number+1
         optimization_value = eval(K, iter_number)
-        print("Current state vector : ", K.T ,", ")
-        print("Current derivative: " , dK.T, ", ")
-        print("Current best:" , optimization_value_best, ", current: ", optimization_value)
-        print("Iteration best:" , iter_number, ", ")
+        if(path==""):
+            print("Current state vector : ", K.T ,", ")
+            print("Current derivative: " , dK.T, ", ")
+            print("Current best:" , optimization_value_best, ", current: ", optimization_value)
+            print("Iteration best:" , iter_number, ", ")
+        else:
+            original_stdout = sys.stdout
+            with open(path, 'a') as f:
+                sys.stdout = f
+                print("Current state vector : ", K.T ,", ")
+                print("Current derivative: " , dK.T, ", ")
+                print("Current best:" , optimization_value_best, ", current: ", optimization_value)
+                print("Iteration best:" , iter_number, ", ")
+                sys.stdout = original_stdout
+
         if twiddle_state ==  TwiddleState.start:
             if (optimization_value < optimization_value_best):
                 optimization_value_best = optimization_value
@@ -188,7 +200,7 @@ def testTwiddle():
     K=np.array([1.0,2.0,3.0])
     dK=np.array([0.1,0.2,0.1])
     
-    twiddle(testEvalFunction, K, dK)
+    twiddle(testEvalFunction, K, dK,"C:/workspace/ubuntu/cache/twiddleOut.txt")
 testTwiddle()
 
 def runTwiddleDefSLAM():
