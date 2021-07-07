@@ -131,7 +131,7 @@ def runDefSLAM(iternumber, params):
     input_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
     os.chdir(output_dir)
     input_path_image = os.path.join(input_path + r"\images")
-    input_path_time = os.path.join(input_path + r"\timestamps\timestamps_short.txt")
+    input_path_time = os.path.join(input_path + r"\timestamps\timestamps.txt")
     exe_str = execution_path
     exe_str +=" " + orb_voc_path
     exe_str +=" " + input_yml_path
@@ -156,13 +156,13 @@ def twiddle(eval, K, dK, path=""):
     iter_number = 0
     optimization_value_best = eval(iter_number, K)
     weights = np.diag(1.0/dK)
-
+    K_best = K
     K[opt_dim] = K[opt_dim] + dK[opt_dim]
     
     stop_norm = 0.01
     
     while (np.linalg.norm(np.matmul(weights,dK)) > stop_norm and iter_number<max_it ):
-        iter_number= iter_number+1
+        iter_number = iter_number+1
         optimization_value = eval(iter_number, K)
         if(path==""):
             print("Iteration:" , iter_number, ", ")
@@ -184,6 +184,7 @@ def twiddle(eval, K, dK, path=""):
 
         if twiddle_state ==  TwiddleState.start:
             if (optimization_value < optimization_value_best):
+                K_best = K
                 optimization_value_best = optimization_value
                 dK[opt_dim] = dK[opt_dim] * 1.5
                 opt_dim = (opt_dim+1)  % sizeParam
@@ -193,6 +194,7 @@ def twiddle(eval, K, dK, path=""):
                 twiddle_state = TwiddleState.change
         elif twiddle_state== TwiddleState.change:
             if optimization_value < optimization_value_best:
+                K_best = K
                 optimization_value_best = optimization_value
                 dK[opt_dim] = -dK[opt_dim]
             else:
@@ -201,19 +203,21 @@ def twiddle(eval, K, dK, path=""):
             opt_dim =  (opt_dim + 1)  % sizeParam
             twiddle_state = TwiddleState.start
             K[opt_dim] = K[opt_dim] + dK[opt_dim]
+        return K_best
 def testTwiddle():        
     def testEvalFunction( iter, K):
         return np.linalg.norm(K)
     K=np.array([1.0,2.0,3.0])
     dK=np.array([0.1,0.2,1000])
     
-    twiddle(testEvalFunction, K, dK)
+    k_best = twiddle(testEvalFunction, K, dK)
 testTwiddle()
 
 def runTwiddleDefSLAM():
     K = np.array([12000.0, 0.7])
     dK = np.array([500.0, 0.1])
-    twiddle(runDefSLAM, K, dK,"C:/workspace/ubuntu/cache/twiddleTestOut.txt")
+    k_best = twiddle(runDefSLAM, K, dK,"C:/workspace/ubuntu/cache/twiddleTestOut.txt")
+    runDefSLAM(-1, k_best)
 runTwiddleDefSLAM()
 
 
