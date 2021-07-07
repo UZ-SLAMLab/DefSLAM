@@ -1,0 +1,133 @@
+%YAML:1.0
+File.outputdir: %PATH_TO_SAVE%
+#--------------------------------------------------------------------------------------------
+# Stereo Rectification. Only if you need to pre-rectify the images.
+#--------------------------------------------------------------------------------------------
+LEFT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data:[755.312744, 0.000000, 327.875000, 0.000000, 420.477722, 165.484406, 0.000000, 0.000000, 1.000000]
+# Camera: left distortion coef
+LEFT.D: !!opencv-matrix
+   rows: 1
+   cols: 4
+   dt: d
+   data:[-0.186853, 0.122769, -0.010146, -0.003869]
+# Camera: right intrinsics
+RIGHT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data:[759.047791, 0.000000, 391.990051, 0.000000, 415.329529, 151.748993, 0.000000, 0.000000, 1.000000]
+# Camera: right distortion coef
+RIGHT.D: !!opencv-matrix
+   rows: 1
+   cols: 4
+   dt: d
+   data:[-0.197641, 0.213583, -0.000370, -0.010498]
+# R matrix
+R.matrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data:[0.999835, 0.001024, 0.018154, -0.001085, 0.999994, 0.003314, -0.018151, -0.003333, 0.999830]
+# T matrix
+T.matrix: !!opencv-matrix
+   rows: 3
+   cols: 1
+   dt: d
+   data:[-5.196155, -0.030411, 0.212897]
+RIGHT.height: 288
+RIGHT.width: 720
+LEFT.height: 288
+LEFT.width: 720
+LEFT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data:[0.9997161275147643522, 0.007007456022987805684, -0.02277191135959537663, -0.006972799289033516749, 0.9999744081804525786, 0.001600954161984054127, 0.02278254720083403365, -0.001441715727809217288, 0.9997394045444052413]
+RIGHT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data:[0.9991446188489900848, 0.005847590574918706124, -0.04093697973195437739, -0.005918277386742626205, 0.9999811976100579924, -0.001605745661001109969, 0.04092682027570542641, 0.001846648537858545458, 0.9991604402053244627]
+LEFT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data:[417.9036254999999755, 0, 373.4007034301757812, 0, 0, 417.9036254999999755, 158.1443862915039062, 0, 0, 0, 1, 0]
+RIGHT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data:[417.9036254999999755, 0, 373.4007034301757812, -2173.3510566883715, 0, 417.9036254999999755, 158.1443862915039062, 0, 0, 0, 1, 0]
+#--------------------------------------------------------------------------------------------
+# Camera parameters
+# Camera calibration and distortion parameters (OpenCV)
+Camera.fx: 755.312744
+Camera.fy: 420.477722
+Camera.cx: 327.875000
+Camera.cy: 165.484406
+Camera.k1: 0.0
+Camera.k2: 0.0
+Camera.p1: 0.0
+Camera.p2: 0.0
+Camera.width: 720
+Camera.height: 288
+# Camera frames per second 
+Camera.fps: 20
+# stereo baseline times fx
+Camera.bf: 3928.1
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 1
+# Close/Far threshold. Baseline times.
+ThDepth: 35
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1200
+# ORB Extractor: Scale factor between levels in the scale pyramid   
+ORBextractor.scaleFactor: 1.2
+# ORB Extractor: Number of levels in the scale pyramid (8)
+ORBextractor.nLevels: 6
+# ORB Extractor: Fast threshold (20/7)
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.052
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2
+Viewer.CameraSize: 0.05507008996987384997
+Viewer.CameraLineWidth: 3
+Viewer.ViewpointX: 0
+Viewer.ViewpointY: -0.07
+Viewer.ViewpointZ: -0.18
+Viewer.ViewpointF: 500
+Viewer.SaveResults: 0
+#--------------------------------------------------------------------------------------------
+# Regularizers Parameters
+#--------------------------------------------------------------------------------------------
+# Laplacian regularizer: It penalizes changes in curvature	
+Regularizer.laplacian: 700
+# Inextensibility regularizer: It penalizes the streching
+Regularizer.Inextensibility: 12000
+# Temporal regularizer: Smoothes the changes in the pose of the mesh frame to frame
+Regularizer.temporal: 0.05
+#Number of neighbours layers used in the local optimization
+Regularizer.LocalZone: 2
+#Number of neighbours layers affected by propagation
+Regularizer.PropagationZone: 0
+Regularizer.Reliability: 0
+
+#--------------------------------------------------------------------------------------------
+# Local Mapping Parameters
+#--------------------------------------------------------------------------------------------
+LocalMapping.pointsToTemplate: 70
+LocalMapping.chiLimit: 0.1
+LocalMapping.Bending: 0.7
+LocalMapping.Schwarp.Regularizer: 0.05
