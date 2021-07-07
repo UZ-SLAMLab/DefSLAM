@@ -98,13 +98,13 @@ def rms_per_sequence (base_dir):
   df.iloc[:,0:-1] = df.iloc[:,0:-1]*1000
   n_matches = df.count(axis=1)-1     
 
-  df_AngIso['frame'] = df_names_AngIso
-  df_AngIso['frame'] = df_AngIso['frame'].astype('int32')
-  df_AngIso = df_AngIso.sort_values(by='frame', ascending=True)
+  #df_AngIso['frame'] = df_names_AngIso
+  #df_AngIso['frame'] = df_AngIso['frame'].astype('int32')
+  #df_AngIso = df_AngIso.sort_values(by='frame', ascending=True)
 
-  df_AngSfN['frame'] = df_names_AngSfN
-  df_AngSfN['frame'] = df_AngSfN['frame'].astype('int32')
-  df_AngSfN = df_AngSfN.sort_values(by='frame', ascending=True)
+  #df_AngSfN['frame'] = df_names_AngSfN
+  #df_AngSfN['frame'] = df_AngSfN['frame'].astype('int32')
+  #df_AngSfN = df_AngSfN.sort_values(by='frame', ascending=True)
 
   df_matches = pd.read_csv(user_input+"/Matches.txt", sep = ' ', header=None, names=['frame', 'inliers', 'outliers', 'possibleMatches'])
   df_matches['frame'] = df_matches['frame'].astype('int32')
@@ -113,11 +113,11 @@ def rms_per_sequence (base_dir):
   rms = np.nanmean(df.iloc[:,0:-1])
   rms_std = np.nanstd(df.iloc[:,0:-1])
 
-  angIso_mean = np.nanmean(df_AngIso.iloc[:,0:-1])
-  angIso_std = np.nanstd(df_AngIso.iloc[:,0:-1])
+  angIso_mean =0 # np.nanmean(df_AngIso.iloc[:,0:-1])
+  angIso_std = 0#np.nanstd(df_AngIso.iloc[:,0:-1])
 
-  angSfN_mean = np.nanmean(df_AngSfN.iloc[:,0:-1])
-  angSfN_std = np.nanstd(df_AngSfN.iloc[:,0:-1])
+  angSfN_mean =0# np.nanmean(df_AngSfN.iloc[:,0:-1])
+  angSfN_std =0# np.nanstd(df_AngSfN.iloc[:,0:-1])
 
   fraction_of_matches = df_matches['inliers'].sum().sum()/df_matches['possibleMatches'].sum().sum()
 
@@ -129,7 +129,7 @@ def runDefSLAM(iternumber, params):
     output_dir, input_yml_path = getYAML(iternumber, K=params)
     input_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
     input_path_image = os.path.join(input_path + r"\images")
-    input_path_time = os.path.join(input_path + r"\timestamps\timestamps.txt")
+    input_path_time = os.path.join(input_path + r"\timestamps\timestamps_short.txt")
     exe_str = execution_path
     exe_str +=" " + orb_voc_path
     exe_str +=" " + input_yml_path
@@ -159,7 +159,7 @@ def twiddle(eval, K, dK, path=""):
     
     while (np.linalg.norm(dK) > stop_norm and iter_number<max_it ):
         iter_number= iter_number+1
-        optimization_value = eval(K, iter_number)
+        optimization_value = eval(iter_number, K)
         if(path==""):
             print("Current state vector : ", K.T ,", ")
             print("Current derivative: " , dK.T, ", ")
@@ -200,13 +200,13 @@ def testTwiddle():
     K=np.array([1.0,2.0,3.0])
     dK=np.array([0.1,0.2,0.1])
     
-    twiddle(testEvalFunction, K, dK,"C:/workspace/ubuntu/cache/twiddleOut.txt")
+    twiddle(testEvalFunction, K, dK)
 testTwiddle()
 
 def runTwiddleDefSLAM():
-    K = np.array([12000.0])
-    dK = np.array([500.0])
-    twiddle(runDefSLAM, K, dK)
+    K = np.array([12000.0, 0.7])
+    dK = np.array([500.0, 0.1])
+    twiddle(runDefSLAM, K, dK,"C:/workspace/ubuntu/cache/twiddleTestOut.txt")
 runTwiddleDefSLAM()
 
 

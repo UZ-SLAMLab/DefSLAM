@@ -169,5 +169,6 @@ Viewer.SaveResults: 1
 #--------------------------------------------------------------------------------------------
 LocalMapping.pointsToTemplate: 70
 LocalMapping.chiLimit: 0.1
-LocalMapping.Bending: 0.7
+#0.7
+LocalMapping.Bending: %PARAMETER_1%
 LocalMapping.Schwarp.Regularizer: 0.05
