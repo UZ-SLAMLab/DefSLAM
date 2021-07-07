@@ -44,7 +44,7 @@ namespace defSLAM
     RegLap = fSettings["Regularizer.laplacian"];
     RegInex = fSettings["Regularizer.Inextensibility"];
     RegTemp = fSettings["Regularizer.temporal"];
-    output_path = (std::string) fSettings["File.outputdir"];
+    output_path = (std::string)fSettings["File.outputdir"];
 
   }
 

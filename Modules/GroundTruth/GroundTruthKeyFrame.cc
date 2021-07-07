@@ -58,7 +58,7 @@ namespace defSLAM
    * pcl library to determinate the normals of the point cloud and compares them 
    * with the estimated by the NRSfM and the SfN. NRSfM tends to be quite noisy.
    */
-  float GroundTruthKeyFrame::estimateAngleErrorAndScale()
+  float GroundTruthKeyFrame::estimateAngleErrorAndScale(std::string output_path)
   {
     size_t nval = this->mvKeysUn.size();
     cv::Mat iLeft(this->imGray.clone());
@@ -197,9 +197,9 @@ namespace defSLAM
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
         << (unsigned int)(this->mTimeStamp);
-    std::string name("ErrorAngIso" + out.str() + "-" + std::to_string(is) +
+    std::string name(output_path+"/ErrorAngIso" + out.str() + "-" + std::to_string(is) +
                      ".txt");
-    std::string name2("ErrorAngSfN" + out.str() + "-" + std::to_string(is) +
+    std::string name2(output_path+"/ErrorAngSfN" + out.str() + "-" + std::to_string(is) +
                       ".txt");
     is++;
     GroundTruthTools::saveResults(ErrorAngleIso, name);

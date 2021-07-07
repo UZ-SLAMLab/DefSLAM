@@ -56,6 +56,7 @@ namespace defSLAM
         chiLimit_(0.07)
   {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
+    output_path = (std::string)fSettings["File.outputdir"];
     pointsToTemplate_ = fSettings["LocalMapping.pointsToTemplate"];
     chiLimit_ = fSettings["LocalMapping.chiLimit"];
     double reg_ = fSettings["LocalMapping.Schwarp.Regularizer"];
@@ -215,7 +216,7 @@ namespace defSLAM
     if (saveResults_)
     {
       float scale =
-          static_cast<GroundTruthKeyFrame *>(kfForTemplate)->estimateAngleErrorAndScale();
+          static_cast<GroundTruthKeyFrame *>(kfForTemplate)->estimateAngleErrorAndScale(output_path);
       std::cout << "Scale Error Keyframe : " << scale << " " << std::endl;
     }
     if (kfForTemplate != mpMap->GetAllKeyFrames()[0])
