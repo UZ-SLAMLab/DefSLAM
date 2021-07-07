@@ -57,11 +57,11 @@ namespace ORB_SLAM2
         mpMap(pMap), mnLastRelocFrameId(0),
         viewerOn(viewerOn)
   {
-    
-    
+
+
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 	// Load output dir
-	output_path = fSettings["File.outputdir"];
+	output_path = (std::string) fSettings["File.outputdir"];
     // Load camera parameters from settings file
     float fx = fSettings["Camera.fx"];
     float fy = fSettings["Camera.fy"];

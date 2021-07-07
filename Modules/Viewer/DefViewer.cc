@@ -44,8 +44,8 @@ namespace defSLAM
     RegLap = fSettings["Regularizer.laplacian"];
     RegInex = fSettings["Regularizer.Inextensibility"];
     RegTemp = fSettings["Regularizer.temporal"];
-    output_path = fSettings["File.outputdir"];
-    
+    output_path = (std::string) fSettings["File.outputdir"];
+
   }
 
   // Main thread function. Draw points, keyframes, the current camera pose and the last processed

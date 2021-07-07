@@ -60,7 +60,7 @@ namespace defSLAM
     double SaveResults = fSettings["Viewer.SaveResults"];
     saveResults = bool((unsigned int)SaveResults);
 
-    output_path = fSettings["File.outputdir"];
+    output_path = (std::string) fSettings["File.outputdir"];
 
     cout << endl
          << "Defomation tracking Parameters: " << endl;
@@ -176,7 +176,7 @@ namespace defSLAM
         {
           this->CreateNewKeyFrame();
         }
-        
+
         // We allow points with high innovation (considererd outliers by the Huber
         // Function) pass to the new keyframe, so that bundle adjustment will
         // finally decide if they are outliers or not. We don't want next frame to
