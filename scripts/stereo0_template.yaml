@@ -116,8 +116,8 @@ RIGHT.P:  !!opencv-matrix
 Regularizer.laplacian: 700
 
 # Inextensibility regularizer: It penalizes the streching
-#12000
-Regularizer.Inextensibility: %PARAMETER_0%  
+#
+Regularizer.Inextensibility: 12000
 # Temporal regularizer: Smoothes the changes in the pose of the mesh frame to frame
 Regularizer.temporal: 0.05
 
@@ -168,7 +168,9 @@ Viewer.SaveResults: 1
 # Local Mapping Parameters
 #--------------------------------------------------------------------------------------------
 LocalMapping.pointsToTemplate: 70
-LocalMapping.chiLimit: 0.1
+#0.1
+LocalMapping.chiLimit: %PARAMETER_2%
 #0.7
 LocalMapping.Bending: %PARAMETER_1%
-LocalMapping.Schwarp.Regularizer: 0.05
+#0.05
+LocalMapping.Schwarp.Regularizer: %PARAMETER_0%  
