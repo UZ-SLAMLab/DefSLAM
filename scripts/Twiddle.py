@@ -9,12 +9,18 @@ from enum import Enum
 import pandas as pd
 import sys
 
+cache_dir_path = r"C:/workspace/ubuntu/cache/"
+yaml_template_path = r"C:\workspace\ubuntu\DefSLAM\scripts\stereo0_template.yaml"
+execution_path = r"C:\workspace\ubuntu\DefSLAM\Apps\Release\DefSLAMGT.exe"
+orb_voc_path = r"C:\workspace\ubuntu\DefSLAM\Vocabulary\ORBvoc.txt"
+input_sequence_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
+
 
 def getYAML(iternumber, K):
-    input_yml_path =r"C:\workspace\ubuntu\DefSLAM\scripts\stereo0_template.yaml"
-    output_dir = r"C:/workspace/ubuntu/cache/Iter"+str(iternumber)
+    input_yml_path = yaml_template_path
+    output_dir = os.path.join(cache_dir_path, "Iter"+str(iternumber))
     os.makedirs(output_dir, exist_ok =True)
-    output_yml_path = output_dir+r"\temp.yaml"
+    output_yml_path = os.path.join(output_dir,"temp.yaml")
     #input file
     fin = open(input_yml_path, "rt")
     #output file to write the result to
@@ -125,13 +131,11 @@ def rms_per_sequence (base_dir):
   return rms, rms_std, angIso_mean, angIso_std, angSfN_mean, angSfN_std, fraction_of_matches
 
 def runDefSLAM(iternumber, params):
-    execution_path = r"C:\workspace\ubuntu\DefSLAM\Apps\Release\DefSLAMGT.exe"
-    orb_voc_path = r"C:\workspace\ubuntu\DefSLAM\Vocabulary\ORBvoc.txt"
+    input_path =input_sequence_path
     output_dir, input_yml_path = getYAML(iternumber, K=params)
-    input_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
     os.chdir(output_dir)
-    input_path_image = os.path.join(input_path + r"\images")
-    input_path_time = os.path.join(input_path + r"\timestamps\timestamps_short.txt")
+    input_path_image = os.path.join(input_path , r"images")
+    input_path_time = os.path.join(input_path, r"timestamps", "timestamps.txt")
     exe_str = execution_path
     exe_str +=" " + orb_voc_path
     exe_str +=" " + input_yml_path
@@ -139,7 +143,7 @@ def runDefSLAM(iternumber, params):
     exe_str +=" " + input_path_image
     exe_str +=" " + input_path_time
     print(exe_str)
-    os.system('cmd /c "'+ exe_str)
+    os.system(exe_str)
     rms, rms_std, angIso_mean, angIso_std, angSfN_mean, angSfN_std, fraction_of_matches = rms_per_sequence(output_dir)
     return rms
 #runDefSLAM(1, np.array([1.0]))    
@@ -209,17 +213,20 @@ def testTwiddle():
     def testEvalFunction( iter, K):
         return np.linalg.norm(K)
     K=np.array([1.0,2.0,3.0])
-    dK=K * 0.05
+    dK = K * 0.1
     
     k_best = twiddle(testEvalFunction, K, dK)
+    print(testEvalFunction(-1, k_best))
+    assert (abs(testEvalFunction(-1, k_best))<1e-2)
 testTwiddle()
 
 def runTwiddleDefSLAM():
     K = np.array([0.05, 0.7, 0.1])
     dK = K * 0.05
-    k_best = twiddle(runDefSLAM, K, dK,"C:/workspace/ubuntu/cache/twiddleTestOut.txt")
+    k_best = twiddle(runDefSLAM, K, dK,os.path.join(cache_dir_path,"twiddleOutput.txt"))
     runDefSLAM(-1, k_best)
 runTwiddleDefSLAM()
+#rint(os.path.join(r"C:/workspace/ubuntu/cache/", "Iter"+str(1)))
 
 
         
