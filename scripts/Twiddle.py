@@ -129,7 +129,7 @@ def runDefSLAM(iternumber, params):
     orb_voc_path = r"C:\workspace\ubuntu\DefSLAM\Vocabulary\ORBvoc.txt"
     output_dir, input_yml_path = getYAML(iternumber, K=params)
     input_path =r"C:\workspace\ubuntu\MandalaDataset\Mandala1"
-    os.chdir(input_path)
+    os.chdir(output_dir)
     input_path_image = os.path.join(input_path + r"\images")
     input_path_time = os.path.join(input_path + r"\timestamps\timestamps_short.txt")
     exe_str = execution_path
