@@ -135,6 +135,8 @@ namespace defSLAM
     double bendingReg_;
     // Save results
     bool saveResults_;
+  private:
+      string output_path;
   };
 
 } // namespace defSLAM

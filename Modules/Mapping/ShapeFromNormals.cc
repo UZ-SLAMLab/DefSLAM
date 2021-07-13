@@ -100,7 +100,7 @@ namespace defSLAM
     DefKeyFrame *defrefKf_ =
         static_cast<DefKeyFrame *>(this->refKf_);
 
-    for (uint var = 0; var < this->refKf_->mvKeysUn.size(); ++var)
+    for (unsigned int var = 0; var < this->refKf_->mvKeysUn.size(); ++var)
     {
       u_vector_.push_back(defrefKf_->mpKeypointNorm[var].pt.x);
       v_vector_.push_back(defrefKf_->mpKeypointNorm[var].pt.y);
@@ -109,25 +109,25 @@ namespace defSLAM
     if (u_vector_.size() == 0)
       return false;
 
-    for (uint i(0); i < Solauxs.rows(); i++)
+    for (unsigned int i(0); i < Solauxs.rows(); i++)
       if (std::isnan(Solauxs(i)))
       {
         std::cout << "nan fail" << std::endl;
         return false;
       }
-    for (uint i(0); i < Solauxs.rows(); i++)
+    for (unsigned int i(0); i < Solauxs.rows(); i++)
       if (std::isinf(Solauxs(i)))
       {
         std::cout << "inf fail" << std::endl;
         return false;
       }
 
-    double *Array;
-    Array = new double[_NumberOfControlPointsU * _NumberOfControlPointsV];
+    std::vector<double> Array(_NumberOfControlPointsU * _NumberOfControlPointsV);
+    
 
     std::vector<float> depthVec;
     depthVec.reserve(Solauxs.rows());
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV; i++)
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV; i++)
     {
       depthVec.push_back(Solauxs(i));
     }
@@ -135,7 +135,7 @@ namespace defSLAM
     float corr = 1 / (depthVec[depthVec.size() / 2]);
     sfnEigen_->Solaux.resize(_NumberOfControlPointsU * _NumberOfControlPointsV,
                              1);
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV; i++)
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV; i++)
     {
       Array[i] = corr * Solauxs(i);
       sfnEigen_->Solaux(i) = corr * Solauxs(i);
@@ -152,10 +152,10 @@ namespace defSLAM
 
     Eigen::MatrixXd Val(u_vector_.size(), 1);
 
-    BBS::EvalEigen(&bbs, static_cast<double *>(Array), &u_vector_[0], &v_vector_[0],
+    BBS::EvalEigen(&bbs, Array, u_vector_, v_vector_,
                    u_vector_.size(), Val, 0, 0);
 
-    for (uint i(0); i < Val.rows(); i++)
+    for (unsigned int i(0); i < Val.rows(); i++)
     {
       cv::Vec3f X3d;
       X3d(0) = u_vector_[i] * Val(i, 0);
@@ -166,7 +166,7 @@ namespace defSLAM
 
     defrefKf_->surface->saveArray(Array, bbs);
 
-    delete[] Array;
+    
     return true;
   }
 
@@ -187,7 +187,7 @@ namespace defSLAM
     u_vector_.reserve(Refkf->mvKeysUn.size());
     v_vector_.reserve(Refkf->mvKeysUn.size());
     Normals.reserve(Refkf->mvKeysUn.size());
-    for (uint var = 0; var < Refkf->mvKeysUn.size(); ++var)
+    for (unsigned int var = 0; var < Refkf->mvKeysUn.size(); ++var)
     {
       cv::Vec3f Normal;
       auto mp = Refkf->GetMapPoint(var);
@@ -209,10 +209,10 @@ namespace defSLAM
       }
     }
 
-    double u[u_vector_.size()];
-    std::copy(u_vector_.begin(), u_vector_.end(), u);
-    double v[v_vector_.size()];
-    std::copy(v_vector_.begin(), v_vector_.end(), v);
+    std::vector<double> u(u_vector_.size());
+    std::copy(u_vector_.begin(), u_vector_.end(), u.begin());
+    std::vector<double> v(v_vector_.size());
+    std::copy(v_vector_.begin(), v_vector_.end(), v.begin());
 
     Eigen::MatrixXd coloc = Eigen::MatrixXd::Zero(
         u_vector_.size(), _NumberOfControlPointsU * _NumberOfControlPointsV);
@@ -226,12 +226,12 @@ namespace defSLAM
     BBS::coloc_derivEigen(&bbs, u, v, u_vector_.size(), 1, 0, coloc_du);
     BBS::coloc_derivEigen(&bbs, u, v, u_vector_.size(), 0, 1, coloc_dv);
 
-    uint npts(u_vector_.size());
-    uint nparams(_NumberOfControlPointsU * _NumberOfControlPointsV);
+    unsigned int npts(u_vector_.size());
+    unsigned int nparams(_NumberOfControlPointsU * _NumberOfControlPointsV);
     Eigen::MatrixXd Mdense = Eigen::MatrixXd::Zero(2 * npts, nparams);
     M.resize(2 * npts, nparams);
 
-    for (uint i(0); i < npts; i++)
+    for (unsigned int i(0); i < npts; i++)
     {
       Eigen::Vector3d n;
       n << Normals[i](0), Normals[i](1), Normals[i](2);

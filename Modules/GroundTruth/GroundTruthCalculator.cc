@@ -83,7 +83,7 @@ namespace defSLAM
             if (r_j > 0.25)
               continue;
             float r2(0.0);
-            for (uint k(0); k < 3; k++)
+            for (unsigned int k(0); k < 3; k++)
             {
               auto res = (scale * PosMono[j][k] - PosStereo[j][k]);
               r2 = r2 + res * res;
@@ -128,7 +128,7 @@ namespace defSLAM
       for (int i = 0; i < n_points; i++)
       {
         float residual(0.0);
-        for (uint j(0); j < 3; j++)
+        for (unsigned int j(0); j < 3; j++)
         {
           auto rest = (best_scale * PosMono[i][j] - PosStereo[i][j]);
           residual = residual + rest * rest;
@@ -175,7 +175,7 @@ namespace defSLAM
                      std::string &name)
     {
       Eigen::MatrixXd asd(vectorError.size(), 1);
-      for (uint i(0); i < vectorError.size(); i++)
+      for (unsigned int i(0); i < vectorError.size(); i++)
       {
         asd(i, 0) = vectorError[i];
       }
@@ -214,8 +214,8 @@ namespace defSLAM
       int tempx(TEMPX), tempy(TEMPY);
       int searchx(SEARCHX), searchy(tempy + MARGIN);
 
-      if (((kp.pt.x - tempx / 2) < 20) or ((kp.pt.y - tempy / 2) < 0) or
-          ((kp.pt.x + tempx / 2) > imRight.cols) or
+      if (((kp.pt.x - tempx / 2) < 20) || ((kp.pt.y - tempy / 2) < 0) ||
+          ((kp.pt.x + tempx / 2) > imRight.cols) ||
           ((kp.pt.y + tempy / 2) > imRight.rows))
         return std::vector<float>(3, -1);
 

@@ -42,7 +42,7 @@ namespace defSLAM
     void MeshDrawer::addEdge(std::vector<int> edge)
     {
         std::unique_lock<std::mutex> M(this->mtemp);
-        for (uint i(0); i < 2; i++)
+        for (unsigned int i(0); i < 2; i++)
         {
             this->Edges.push_back(edge[i]);
         }
@@ -54,7 +54,7 @@ namespace defSLAM
     void MeshDrawer::addFacet(std::vector<int> fac)
     {
         std::unique_lock<std::mutex> M(this->mtemp);
-        for (uint i(0); i < 3; i++)
+        for (unsigned int i(0); i < 3; i++)
         {
             this->Facets.push_back(fac[i]);
         }
@@ -69,11 +69,11 @@ namespace defSLAM
     void MeshDrawer::addNode(std::vector<double> pos, std::vector<double> proj, int role)
     {
         std::unique_lock<std::mutex> M(this->mtemp);
-        for (uint i(0); i < 3; i++)
+        for (unsigned int i(0); i < 3; i++)
         {
             this->Nodes.push_back(pos[i]);
         }
-        for (uint i(0); i < 2; i++)
+        for (unsigned int i(0); i < 2; i++)
         {
             this->NodesProjection.push_back(proj[i]);
         }
@@ -111,11 +111,11 @@ namespace defSLAM
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fin_image.cols, fin_image.rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, fin_image.ptr());
 
-        for (uint i = 0; i < Facets.size(); i = i + 3)
+        for (unsigned int i = 0; i < Facets.size(); i = i + 3)
         {
             glBegin(GL_TRIANGLES);
             glColor3f(1, 1, 1); // set global color to white, otherwise this color will be (somehow) added to the texture
-            for (uint j = i; j < i + 3; j++)
+            for (unsigned int j = i; j < i + 3; j++)
             {
                 glTexCoord2f(this->NodesProjection[2 * Facets[j]], this->NodesProjection[2 * Facets[j] + 1]);
                 glVertex3f(this->Nodes[3 * Facets[j]], this->Nodes[3 * Facets[j] + 1], this->Nodes[3 * Facets[j] + 2]);
@@ -130,11 +130,11 @@ namespace defSLAM
         if (drawedges)
         {
             // Draw Edges
-            for (uint i = 0; i < this->Edges.size(); i = i + 2)
+            for (unsigned int i = 0; i < this->Edges.size(); i = i + 2)
             {
                 glBegin(GL_LINES);
 
-                for (uint j = i; j < i + 2; j++)
+                for (unsigned int j = i; j < i + 2; j++)
                 {
                     double Vx = this->Nodes[3 * Edges[j]];
                     double Vy = this->Nodes[3 * Edges[j] + 1];

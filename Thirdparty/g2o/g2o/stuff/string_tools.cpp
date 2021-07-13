@@ -92,34 +92,36 @@ std::string strToUpper(const std::string& s)
   return ret;
 }
 
-std::string formatString(const char* fmt, ...)
-{
-  char* auxPtr = NULL;
-  va_list arg_list;
-  va_start(arg_list, fmt);
-  int numChar = vasprintf(&auxPtr, fmt, arg_list);
-  va_end(arg_list);
-  string retString;
-  if (numChar != -1)
-    retString = auxPtr;
-  else {
-    cerr << __PRETTY_FUNCTION__ << ": Error while allocating memory" << endl;
-  }
-  free(auxPtr);
-  return retString;
-}
 
-int strPrintf(std::string& str, const char* fmt, ...)
-{
-  char* auxPtr = NULL;
-  va_list arg_list;
-  va_start(arg_list, fmt);
-  int numChars = vasprintf(&auxPtr, fmt, arg_list);
-  va_end(arg_list);
-  str = auxPtr;
-  free(auxPtr);
-  return numChars;
-}
+
+// std::string formatString(const char* fmt, ...)
+// {
+//   char* auxPtr = NULL;
+//   va_list arg_list;
+//   va_start(arg_list, fmt);
+//   int numChar = vasprintf(&auxPtr, fmt, arg_list);
+//   va_end(arg_list);
+//   string retString;
+//   if (numChar != -1)
+//     retString = auxPtr;
+//   else {
+//     cerr << __PRETTY_FUNCTION__ << ": Error while allocating memory" << endl;
+//   }
+//   free(auxPtr);
+//   return retString;
+// }
+// 
+// int strPrintf(std::string& str, const char* fmt, ...)
+// {
+//   char* auxPtr = NULL;
+//   va_list arg_list;
+//   va_start(arg_list, fmt);
+//   int numChars = vasprintf(&auxPtr, fmt, arg_list);
+//   va_end(arg_list);
+//   str = auxPtr;
+//   free(auxPtr);
+//   return numChars;
+// }
 
 std::string strExpandFilename(const std::string& filename)
 {

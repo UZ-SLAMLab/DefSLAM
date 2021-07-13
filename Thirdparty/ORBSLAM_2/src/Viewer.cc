@@ -23,7 +23,7 @@
 #include <iomanip>
 #include <mutex>
 #include <pangolin/pangolin.h>
-#include <unistd.h>
+//#include <unistd.h>
 namespace ORB_SLAM2
 {
 
@@ -55,7 +55,7 @@ namespace ORB_SLAM2
     mViewpointZ = fSettings["Viewer.ViewpointZ"];
     mViewpointF = fSettings["Viewer.ViewpointF"];
     double SaveResults = fSettings["Viewer.SaveResults"];
-    mbSaveResults = uint(SaveResults);
+    mbSaveResults = (unsigned int)(SaveResults);
   }
 
   void Viewer::Run()
@@ -117,7 +117,7 @@ namespace ORB_SLAM2
 
     while (1)
     {
-      usleep(mT * 1000);
+        this_thread::sleep_for(chrono::microseconds((size_t)(mT * 1000)));
       // sleep(1);
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -167,7 +167,7 @@ namespace ORB_SLAM2
       {
         std::ostringstream out;
         out << std::internal << std::setfill('0') << std::setw(5)
-            << uint(timestamp);
+            << (unsigned int)(timestamp);
         d_cam1.SaveOnRender("3D" + out.str());
       }
       cv::Mat im = mpFrameDrawer->DrawFrame();
@@ -177,7 +177,7 @@ namespace ORB_SLAM2
         {
           std::ostringstream out;
           out << std::internal << std::setfill('0') << std::setw(5)
-              << uint(timestamp);
+              << (unsigned int)(timestamp);
           cv::imwrite("2D" + out.str() + ".png", im);
         }
         cv::imshow("ORBSLAM2: Current Frame", im);
@@ -187,7 +187,7 @@ namespace ORB_SLAM2
       pangolin::FinishFrame();
       unique_lock<mutex> lock22(mMutexTimeStamp);
 
-      if ((menuNext) or (menuAutoPlay))
+      if ((menuNext) || (menuAutoPlay))
       {
         unique_lock<mutex> locknext(mMutexNext);
         this->next = true;
@@ -218,7 +218,7 @@ namespace ORB_SLAM2
       {
         while (isStopped())
         {
-          usleep(3000);
+            this_thread::sleep_for(chrono::microseconds(3000));
         }
       }
 

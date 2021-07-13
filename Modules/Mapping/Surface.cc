@@ -23,15 +23,16 @@
 
 namespace BBS
 {
-  void EvalEigen(bbs_t *bbs, const double *ctrlpts, double *u, double *v,
-                 int nval, Eigen::MatrixXd &val, int du, int dv);
+ 
+  void EvalEigen(bbs_t* bbs, const std::vector<double>& ctrlpts, std::vector<double>& u, std::vector<double>& v,
+      int nval, Eigen::MatrixXd& val, int du, int dv);
 }
 
 namespace defSLAM
 {
   // Constructor
-  Surface::Surface(uint numberOfPoints)
-      : nodesDepth_(nullptr), surfacePoints_(numberOfPoints, SurfacePoint()),
+  Surface::Surface(unsigned int numberOfPoints)
+      : nodesDepth_(), surfacePoints_(numberOfPoints, SurfacePoint()),
         numberofNormals_(0), normalsLimit_(10)
   {
   }
@@ -40,24 +41,18 @@ namespace defSLAM
   Surface::~Surface()
   {
     surfacePoints_.clear();
-    if (nodesDepth_)
-      delete[] nodesDepth_;
+   
   }
 
   /***********
   * Save the array with the depth estimated by 
   ************/
-  void Surface::saveArray(double *Array, BBS::bbs_t &bbss)
+  void Surface::saveArray(const std::vector<double>& Array, BBS::bbs_t& bbss)
   {
-    bbs = bbss;
-    if (nodesDepth_)
-      delete[] nodesDepth_;
+      bbs = bbss;
+      nodesDepth_.resize(bbs.nptsu * bbs.nptsv);
+      copy(Array.begin(), Array.begin()+ bbs.nptsu * bbs.nptsv, nodesDepth_.begin()); // NOTE should till the END, but I don\t want to change logic
 
-    nodesDepth_ = new double[bbs.nptsu * bbs.nptsv];
-    for (int i(0); i < bbs.nptsu * bbs.nptsv; i++)
-    {
-      nodesDepth_[i] = Array[i];
-    }
   }
 
   /***********
@@ -72,7 +67,7 @@ namespace defSLAM
   }
 
   // Return normals saved
-  uint Surface::getnumberofNormals() { return numberofNormals_; }
+  unsigned int Surface::getnumberofNormals() { return numberofNormals_; }
 
   /***********
     * Set a normal saved. In DefSLAM ind makes reference to
@@ -111,7 +106,7 @@ namespace defSLAM
   // registration
   void Surface::applyScale(double s22)
   {
-    for (uint i(0); i < surfacePoints_.size(); i++)
+    for (unsigned int i(0); i < surfacePoints_.size(); i++)
     {
       cv::Vec3f x3D;
       surfacePoints_[i].getDepth(x3D);
@@ -127,20 +122,20 @@ namespace defSLAM
 
   // Discretize the surface in xs*ys vertex. It is used to
   // create a mesh of xs columns and ys rows.
-  void Surface::getVertex(std::vector<cv::Mat> &NodesSurface, uint xs, uint ys)
+  void Surface::getVertex(std::vector<cv::Mat> &NodesSurface, unsigned int xs, unsigned int ys)
   {
-    double arrayCU[xs * ys];
-    double arrayCV[xs * ys];
+    std::vector<double> arrayCU(xs * ys);
+    std::vector<double> arrayCV(xs * ys);
 
-    uint us(0);
+    unsigned int us(0);
     double t(0.03);
     double umaxtemp = bbs.umax; //-0.20;
     double umintemp = bbs.umin; //+0.15;
     double vmaxtemp = bbs.vmax; //-0.20;
     double vmintemp = bbs.vmin; //+0.25;
-    for (uint x(0); x < xs; x++)
+    for (unsigned int x(0); x < xs; x++)
     {
-      for (uint j(0); j < ys; j++)
+      for (unsigned int j(0); j < ys; j++)
       {
         arrayCU[us] =
             double((umaxtemp - umintemp - 2 * t) * x) / (xs - 1) + (umintemp + t);
@@ -151,10 +146,10 @@ namespace defSLAM
     }
 
     Eigen::MatrixXd Val2(xs * ys, 1);
-    BBS::EvalEigen(&bbs, static_cast<const double *>(nodesDepth_), arrayCU,
+    BBS::EvalEigen(&bbs, nodesDepth_, arrayCU,
                    arrayCV, xs * ys, Val2, 0, 0);
     NodesSurface.reserve(xs * ys);
-    for (uint x(0); x < xs * ys; x++)
+    for (unsigned int x(0); x < xs * ys; x++)
     {
       cv::Mat x3D(4, 1, CV_32F);
       x3D.at<float>(0, 0) = arrayCU[x] * Val2(x, 0);

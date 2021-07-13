@@ -69,6 +69,24 @@ chmod +x build.sh
 
 This will create **libDefSLAM.so**  at *lib* folder and the executables **simplestereo** **simpleCT** and **simple** in *Apps* folder.
 
+## 4.1 Windows build
+### 4.1.1 Install vcpkg
+Follow the [vcpkg install guide](https://github.com/Microsoft/vcpkg)
++ Set follwoing Environment Variables:
+ + VCPKG_DEFAULT_TRIPLET = x64-windows
+ + VCPKG_ROOT = <path to  VCPKG>
+If environment variables not defined then default VCPKG_ROOT="C:\git\vcpkg" set by vSLAM build file
+### 4.1.2 Install dependcies 
+in VCPKG_ROOT call
+```
+vcpkg install OpenCV Pangolin Eigen3 ceres[suitsparse,lapack,eigensparse,tools] pcl
+```
+### 4.1.2 Build 
+```
+cd DefSLAM
+build.bat
+```
+
 # 5. Datasets
 ## Mandala dataset
 Download the sequences with the link: 

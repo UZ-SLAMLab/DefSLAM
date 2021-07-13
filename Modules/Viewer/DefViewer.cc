@@ -28,7 +28,8 @@
 #include <iomanip>
 #include <mutex>
 #include <pangolin/pangolin.h>
-#include <unistd.h>
+//#include <unistd.h>
+
 
 namespace defSLAM
 {
@@ -43,6 +44,8 @@ namespace defSLAM
     RegLap = fSettings["Regularizer.laplacian"];
     RegInex = fSettings["Regularizer.Inextensibility"];
     RegTemp = fSettings["Regularizer.temporal"];
+    output_path = (std::string)fSettings["File.outputdir"];
+
   }
 
   // Main thread function. Draw points, keyframes, the current camera pose and the last processed
@@ -114,7 +117,7 @@ namespace defSLAM
 
     while (1)
     {
-      usleep(mT * 1000);
+        this_thread::sleep_for(chrono::microseconds((size_t)(mT * 1000)));
       // sleep(1);
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -174,8 +177,8 @@ namespace defSLAM
       {
         std::ostringstream out;
         out << std::internal << std::setfill('0') << std::setw(5)
-            << uint(timestamp);
-        d_cam1.SaveOnRender("3D" + out.str());
+            << (unsigned int)(timestamp);
+        d_cam1.SaveOnRender(output_path + "/3D" + out.str());
       }
       cv::Mat im = mpFrameDrawer->DrawFrame();
       if (!im.empty())
@@ -184,8 +187,8 @@ namespace defSLAM
         {
           std::ostringstream out;
           out << std::internal << std::setfill('0') << std::setw(5)
-              << uint(timestamp);
-          cv::imwrite("2D" + out.str() + ".png", im);
+              << (unsigned int)(timestamp);
+          cv::imwrite(output_path + "/2D" + out.str() + ".png", im);
         }
         cv::imshow("DefSLAM: Current Frame", im);
         cv::waitKey(10);
@@ -197,7 +200,7 @@ namespace defSLAM
       mpTracker->setRegLap(menuLaplacian);
       mpTracker->setRegTemp(menuTemporal);
 
-      if ((menuNext) or (menuAutoPlay))
+      if ((menuNext) || (menuAutoPlay))
       {
         unique_lock<mutex> locknext(mMutexNext);
         this->next = true;
@@ -228,7 +231,7 @@ namespace defSLAM
       {
         while (isStopped())
         {
-          usleep(3000);
+            this_thread::sleep_for(chrono::microseconds(3000));
         }
       }
 

@@ -86,7 +86,7 @@ namespace defSLAM
    * and the scaled monocular map point. It also saves the results into a txt 
    * file
   */
-    double Estimate3DError(Map *map, const double &s);
+    double Estimate3DError(Map *map, const double &s, string output_path);
 
     std::vector<std::vector<float>> getPosMono();
     std::vector<std::vector<float>> getPosStereo();

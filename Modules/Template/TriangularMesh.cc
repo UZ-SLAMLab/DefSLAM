@@ -34,7 +34,7 @@ namespace defSLAM
       : Template(map)
   {
     std::vector<Node *> NodesIndex;
-    for (uint j = 0; j < vertexes.size() - 1; j++)
+    for (unsigned int j = 0; j < vertexes.size() - 1; j++)
     {
       Node *NewNode =
           new Node(vertexes[j][0], vertexes[j][1], vertexes[j][2], j, this);
@@ -45,7 +45,7 @@ namespace defSLAM
       numVertices++;
     }
 
-    for (uint j = 0; j < indexes.size(); j++)
+    for (unsigned int j = 0; j < indexes.size(); j++)
     {
       facets_.insert(new Facet(NodesIndex[size_t(indexes[j][0])],
                                NodesIndex[size_t(indexes[j][1])],
@@ -71,7 +71,7 @@ namespace defSLAM
     cv::Mat Twc = kf->GetPoseInverse();
     vertexW.reserve(NodesSurface.size());
 
-    for (uint i(0); i < NodesSurface.size(); i++)
+    for (unsigned int i(0); i < NodesSurface.size(); i++)
     {
       std::vector<float> ptW;
       ptW.reserve(3);
@@ -112,7 +112,7 @@ namespace defSLAM
   {
     std::vector<Node *> NodesIndex;
     NodesIndex.reserve(vertex.size());
-    for (uint j = 0; j < vertex.size(); j++)
+    for (unsigned int j = 0; j < vertex.size(); j++)
     {
       Node *NewNode = new Node(vertex[j][0], vertex[j][1], vertex[j][2], j, this);
       nodes_.insert(NewNode);
@@ -121,7 +121,7 @@ namespace defSLAM
       numVertices++;
     }
     facets.reserve(facets.size());
-    for (uint j = 0; j < facets.size(); j++)
+    for (unsigned int j = 0; j < facets.size(); j++)
     {
       Facet *facet = new Facet(NodesIndex[size_t(facets[j][0])],
                                NodesIndex[size_t(facets[j][1])],

@@ -33,6 +33,7 @@
 
 #include "Schwarp.h"
 #include "SchwarpDatabase.h"
+#include <unordered_map>
 
 namespace defSLAM
 {
@@ -162,7 +163,7 @@ namespace defSLAM
     double vmin = KF->vmin;
     double vmax = KF->vmax;
 
-    for (uint ikp = 0; ikp < vMatchedIndices.size(); ikp++)
+    for (unsigned int ikp = 0; ikp < vMatchedIndices.size(); ikp++)
     {
       const auto &idx1 = vMatchedIndices[ikp].first;
       const auto &idx2 = vMatchedIndices[ikp].second;
@@ -182,7 +183,7 @@ namespace defSLAM
 
     Eigen::MatrixXd ControlPointsInitialKF(
         _NumberOfControlPointsU * _NumberOfControlPointsV, 2);
-    uint us(0);
+    unsigned int us(0);
     for (int i(0); i < KF->NCu; i++)
     {
       for (int j(0); j < KF->NCv; j++)
@@ -261,8 +262,8 @@ namespace defSLAM
     std::vector<cv::KeyPoint> dqvv =
         Warps::Warp::getEstimates(KP1, umin, umax, vmin, vmax, KF->NCu, KF->NCv,
                                   KF->valdim, x, ControlPoints, 0, 2);
-    uint counter(0);
-    uint counter2(0);
+    unsigned int counter(0);
+    unsigned int counter2(0);
 
     for (size_t ikp = 0; ikp < vMatchedIndices.size(); ikp++)
     {
@@ -270,11 +271,11 @@ namespace defSLAM
       const size_t &idx2 = vMatchedIndices[ikp].second;
       MapPoint *mapPoint = KF->GetMapPoint(idx1);
       MapPoint *mapPoint2 = KF2->GetMapPoint(idx2);
-      if ((!mapPoint) or (!mapPoint2))
+      if ((!mapPoint) || (!mapPoint2))
       {
         continue;
       }
-      if ((mapPoint->isBad()) or (mapPoint2->isBad()))
+      if ((mapPoint->isBad()) || (mapPoint2->isBad()))
       {
         continue;
       }

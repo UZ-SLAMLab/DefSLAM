@@ -242,11 +242,11 @@ namespace g2o
 
     void setDistanceEdges(double lenghtEdge) { lenghtEdge_ = lenghtEdge; }
 
-    void SetNeighbourgEdge(uint indx) { Index_Number = indx; }
+    void SetNeighbourgEdge(unsigned int indx) { Index_Number = indx; }
 
     void get_Neight()
     {
-      for (uint i(1); i < _vertices.size(); i++)
+      for (unsigned int i(1); i < _vertices.size(); i++)
       {
         const VertexSBAPointXYZ *v1 =
             static_cast<const VertexSBAPointXYZ *>(_vertices[i]);
@@ -262,7 +262,7 @@ namespace g2o
       Eigen::Vector3d Ni;
       Ni = v->estimate();
 
-      for (uint i(1); i < _vertices.size(); i++)
+      for (unsigned int i(1); i < _vertices.size(); i++)
       {
         const VertexSBAPointXYZ *v1 =
             static_cast<const VertexSBAPointXYZ *>(_vertices[i]);
@@ -274,7 +274,7 @@ namespace g2o
       Neightweight << 0, 0, 0;
       double sumweight_aux(0.0);
 
-      for (uint i(0); i < Vertex2.size(); i++)
+      for (unsigned int i(0); i < Vertex2.size(); i++)
       {
         Neightweight.noalias() = Neightweight + weights[i] * (Vertex2[i]);
         sumweight_aux = sumweight_aux + weights[i];
@@ -294,7 +294,7 @@ namespace g2o
     {
       _jacobianOplus[0] = meanCurvature_.transpose();
 
-      for (uint i(0); i < _jacobianOplus.size(); i++)
+      for (unsigned int i(0); i < _jacobianOplus.size(); i++)
       {
         if (meanCurvatureNorm_ < 1E-15)
         {
@@ -319,7 +319,7 @@ namespace g2o
   private:
     Eigen::Vector3d initial_coordinate;
     std::vector<double> weights;
-    uint Index_Number;
+    unsigned int Index_Number;
     std::vector<Eigen::Vector3d> Vertex;
     double lenghtEdge_;
     double sumWeights_;

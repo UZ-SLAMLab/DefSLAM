@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <vector>
 #include <string>
 
@@ -173,7 +173,7 @@ void LoadImages(const string &strPathLeft, const string &strPathRight,
       stringstream ss;
       ss << s;
       string name = ss.str();
-      for (uint i(0); i < 6; i++)
+      for (unsigned int i(0); i < 6; i++)
         name.pop_back();
       vstrImageLeft.push_back(strPathLeft + "/stereo_im_l_" + name + ".png");
       vstrImageRight.push_back(strPathRight + "/stereo_im_r_" + name + ".png");

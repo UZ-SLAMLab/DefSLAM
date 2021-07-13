@@ -1,0 +1,176 @@
+%YAML:1.0
+
+File.outputdir: %PATH_TO_SAVE%
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+# Estos son los parámetros que queremos tener de las imágenes rectificadas
+
+# ------------------- DONT TOUCH ---------------------
+# Camera calibration and distortion parameters (OpenCV) 
+Camera.fx: 435.2046959714599
+Camera.fy: 435.2046959714599
+Camera.cx: 367.4517211914062
+Camera.cy: 252.2008514404297
+
+Camera.k1: 0.0
+Camera.k2: 0.0
+Camera.p1: 0.0
+Camera.p2: 0.0
+
+Camera.width: 752
+Camera.height: 480
+## --------------------------------------------------
+
+# Camera frames per second (camera specifications)
+Camera.fps: 7.0
+
+# stereo baseline times fx (from python code)
+Camera.bf: 39.2778179991
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 0
+
+# Close/Far threshold. Baseline times.
+ThDepth: 35
+
+# IMPORTANTE!!: Se hace corresponder el eje X con el eje que une las dos cámaras stereo
+# Para ello, el eje de rotación viene determinado por [(tr-tl)x(1,0,0)]/|(tr-tl)x(1,0,0)|, el cual es unitario
+# el ángulo de giro viene determinado por cos-1([(tr-tl).(1,0,0)]/|tr-tl|)
+# Mediante la fórmula de rodriguez se puede construir la matriz de rotación correspondiente
+
+#--------------------------------------------------------------------------------------------
+# Stereo Rectification. Only if you need to pre-rectify the images.
+# Camera.fx, .fy, etc must be the same as in LEFT.P
+#--------------------------------------------------------------------------------------------
+
+# --------------------- FROM .JSON FILE------------------------------
+LEFT.height: 480
+LEFT.width: 640
+# LEFT.D from perceptin .json file
+LEFT.D: !!opencv-matrix
+   rows: 1
+   cols: 5
+   dt: d
+   data: [-0.39293111820058291, 0.18208007048365576, 0, 0, -0.044943862821825976]
+# LEFT.K corresponde con los valores de [fu,fv,cu,cv] de la matriz de cámara de la cámara 0 del Euroc
+LEFT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [443.85778947645309, 0.0, 321.50975593449152, 0.0, 440.75868548509084, 222.00701187232335, 0.0, 0.0, 1.0]
+# -------------------------------------------------------------------
+
+# --------------------- FROM python code ------------------------------
+# LEFT.R matriz que se calcula según como aparece en el cuaderno de notas y que se computa con el programa de python
+LEFT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [0.999984956037, 0.00546421149139, 0.000434777522338, -0.00546421149139, 0.999985050682, -1.18949044924e-06, -0.000434777522338, -1.18949044924e-06, 0.999999905354]
+
+# LEFT.P matriz de cámara deseada, que coincide con los parámetros declarados al inicio del programa
+LEFT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data: [435.204695971, 0.0, 367.451721191, 0.0, 0.0, 435.204695971, 252.20085144, 0.0, 0.0, 0.0, 1.0, 0.0]
+
+# -------------------------------------------------------------------
+
+# --------------------- FROM .JSON FILE------------------------------
+RIGHT.height: 480
+RIGHT.width: 640
+RIGHT.D: !!opencv-matrix
+   rows: 1
+   cols: 5
+   dt: d
+   data: [-0.39540285896258032, 0.1884460396982838, 0, 0, -0.049103396910975365]
+RIGHT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [440.88101821337432, 0.0, 332.98102722211388, 0.0, 438.1717491972617, 230.14627211526098, 0.0, 0.0, 1]
+# -------------------------------------------------------------------
+
+# --------------------- FROM python code ------------------------------
+RIGHT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [0.999982873719, 0.00305538872391, 0.00498756516532, -0.00308846209804, 0.999973185135, 0.00663698798752, -0.00496715303882, -0.00665228174459, 0.999965536546]
+
+# RIGHT.P matriz de cámara deseada, que coincide con los parámetros declarados al inicio del programa con la única diferencia de que hay una traslación en el eje X orientado de igual forma que el eje de baseline
+RIGHT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data: [435.204695971, 0.0, 367.451721191, -39.2778179991, 0.0, 435.204695971, 252.20085144, 0.0, 0.0, 0.0, 1.0, 0.0]
+
+# -------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------
+# Regularizer Parameters
+#--------------------------------------------------------------------------------------------
+
+# Laplacian regularizer: It penalizes changes in curvature	
+Regularizer.laplacian: 700
+
+# Inextensibility regularizer: It penalizes the streching
+#
+Regularizer.Inextensibility: 12000
+# Temporal regularizer: Smoothes the changes in the pose of the mesh frame to frame
+Regularizer.temporal: 0.05
+
+#Number of neighbours layers used in the local optimization
+Regularizer.LocalZone: 2
+
+#Number of neighbours layers affected by propagation
+Regularizer.PropagationZone: 0
+
+# Reliability: It uses just the more found keypoints  (Reliability = found / "viewed)	
+Regularizer.Reliability: 0
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters (keep always the same)
+#--------------------------------------------------------------------------------------------
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1200
+
+# ORB Extractor: Scale factor between levels in the scale pyramid 	
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid	
+ORBextractor.nLevels: 6
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast			
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2
+Viewer.CameraSize: 0.05
+Viewer.CameraLineWidth: 0.13
+Viewer.ViewpointX: -2.5
+Viewer.ViewpointY: -1
+Viewer.ViewpointZ: -1
+Viewer.ViewpointF: 500
+Viewer.TemplateLineWidth: 0.8
+Viewer.SaveResults: 1
+#--------------------------------------------------------------------------------------------
+# Local Mapping Parameters
+#--------------------------------------------------------------------------------------------
+LocalMapping.pointsToTemplate: 70
+#0.1
+LocalMapping.chiLimit: %PARAMETER_2%
+#0.7
+LocalMapping.Bending: %PARAMETER_1%
+#0.05
+LocalMapping.Schwarp.Regularizer: %PARAMETER_0%  

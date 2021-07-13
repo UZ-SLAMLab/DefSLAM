@@ -41,7 +41,7 @@ std::vector<int> SmootherMLS::smoothPointCloud(const SmootherMLS::pointcloud &pc
 {
     pcl::PointCloud<PointXYZ>::Ptr cloud(new pcl::PointCloud<PointXYZ>());
 
-    for (uint i(0); i < pcVector.size(); i++)
+    for (unsigned int i(0); i < pcVector.size(); i++)
     {
         PointXYZ pclpoint;
         pclpoint.x = pcVector[i][0];
@@ -64,7 +64,7 @@ std::vector<int> SmootherMLS::smoothPointCloud(const SmootherMLS::pointcloud &pc
     SmootherMLS::pointcloud pcVectorO;
     pcVectorO.reserve(mls_points.size());
 
-    for (uint i(0); i < pcVector.size(); i++)
+    for (unsigned int i(0); i < pcVector.size(); i++)
     {
         std::vector<float> pt;
         pt.reserve(3);
@@ -81,7 +81,7 @@ std::vector<int> SmootherMLS::outlierRemovalRadius(const SmootherMLS::pointcloud
 {
     pcl::PointCloud<PointXYZ>::Ptr cloud(new pcl::PointCloud<PointXYZ>());
 
-    for (uint i(0); i < pcVector.size(); i++)
+    for (unsigned int i(0); i < pcVector.size(); i++)
     {
         PointXYZ pclpoint;
         pclpoint.x = pcVector[i][0];

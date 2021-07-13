@@ -43,7 +43,7 @@ namespace defSLAM
     {
         // Copy of pose Optimization from optimizer in ORBSLAM to increase thresholds
         // for deformable scenarios.
-        int poseOptimization(Frame *pFrame, ofstream &myfile);
+        int poseOptimization(Frame* pFrame);// , ofstream& myfile);
 
         // Shape-from-template with camera motion estimation. This function is used in
         // the deformation tracking to estimate the map deformation and camera pose each

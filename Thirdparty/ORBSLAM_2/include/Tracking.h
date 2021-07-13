@@ -111,7 +111,7 @@ namespace ORB_SLAM2
 
     eTrackingState mState;
     eTrackingState mLastProcessedState;
-
+    
     // Input sensor
     int mSensor;
 
@@ -263,6 +263,10 @@ namespace ORB_SLAM2
     bool saveResults;
 
     std::mutex Regmutex;
+
+  private:
+      string output_path;
+
   };
 
 } // namespace ORB_SLAM2

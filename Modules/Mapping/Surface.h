@@ -49,7 +49,7 @@ namespace defSLAM
     /***********
      * Save the array with the depth estimated by 
      ************/
-    void saveArray(double *Array, BBS::bbs_t &bbss);
+    void saveArray(const std::vector<double>& Array, BBS::bbs_t &bbss);
 
     /***********
      * Check if enough normals have been estimated
@@ -84,7 +84,7 @@ namespace defSLAM
     void getVertex(std::vector<cv::Mat> &NodesSurface, uint, uint);
 
   private:
-    double *nodesDepth_; // Depth of the nodes register.
+    std::vector<double> nodesDepth_; // Depth of the nodes register.
 
     std::vector<SurfacePoint> surfacePoints_; // Points correspoding to the keypoints of the keyframe
 

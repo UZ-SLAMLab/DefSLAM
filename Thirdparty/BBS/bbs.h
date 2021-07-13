@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include <vector>
 
 namespace BBS
 {
@@ -49,7 +50,8 @@ namespace BBS
     } bbs_t;
 
     void normalize(double xmin, double xmax, int npts, double *x, int nb_x, double *nx);
-    void normalize_with_inter(double xmin, double xmax, int npts, double *x, int nb_x, double *nx, int *inter);
+    void normalize_with_inter(double xmin, double xmax, int npts, double* x, int nb_x, std::vector<double>& nx, std::vector<int>& inter);
+    void normalize_with_inter(double xmin, double xmax, int npts, std::vector<double>& x, int nb_x, std::vector<double>& nx, std::vector<int>& inter);
 
     void eval_basis(double nx, double *val_basis);
     void eval_basis_d(double nx, double *val_basis);

@@ -55,7 +55,7 @@ namespace defSLAM
    * pcl library to determinate the normals of the point cloud and compares them 
    * with the estimated by the NRSfM and the SfN. NRSfM tends to be quite noisy.
    */
-    float estimateAngleErrorAndScale();
+    float estimateAngleErrorAndScale(std::string output_path);
 
     // Drawer purposes. Not used now
     std::vector<cv::Point3f> mvLocalMapPoints, mvStereoMapPoints;

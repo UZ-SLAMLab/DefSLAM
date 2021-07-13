@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <stdint-gcc.h>
+#include <stdint.h>
 
 #include "FORB.h"
 
@@ -119,9 +119,28 @@ std::string FORB::toString(const FORB::TDescriptor &a)
   
 void FORB::fromString(FORB::TDescriptor &a, const std::string &s)
 {
+#if 0
+
+
+    a.create(1, FORB::L, CV_8U);
+    unsigned char* p = a.ptr<unsigned char>();
+    char ch = ' ';
+    size_t pos = s.find(ch);
+    size_t initialPos = 0;
+    int n[32];
+    sscanf(s.c_str(), "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d ",
+        &n[0], &n[1], &n[2], &n[3], &n[4], &n[5], &n[6], &n[7], &n[8], &n[9], &n[10],
+        &n[11], &n[12], &n[13], &n[14], &n[15], &n[16], &n[17], &n[18], &n[19], &n[20],
+        &n[21], &n[22], &n[23], &n[24], &n[25], &n[26], &n[27], &n[28], &n[29], &n[30], &n[31], &n[32]);
+
+    for (int i = 0; i < FORB::L && pos != std::string::npos; ++i, ++p)
+    {
+        *p = (unsigned char)n[i];
+    }
+#else
   a.create(1, FORB::L, CV_8U);
   unsigned char *p = a.ptr<unsigned char>();
-  
+
   stringstream ss(s);
   for(int i = 0; i < FORB::L; ++i, ++p)
   {
@@ -131,7 +150,7 @@ void FORB::fromString(FORB::TDescriptor &a, const std::string &s)
     if(!ss.fail()) 
       *p = (unsigned char)n;
   }
-  
+#endif 
 }
 
 // --------------------------------------------------------------------------

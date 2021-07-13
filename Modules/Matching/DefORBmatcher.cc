@@ -56,7 +56,7 @@ namespace defSLAM
 
     this->searchBySchwarp(Kf1, Kf2, x, vMatchedIndices2);
     std::cout << "New points : " << vMatchedIndices2.size() << std::endl;
-    for (uint i(0); i < vMatchedIndices2.size(); i++)
+    for (unsigned int i(0); i < vMatchedIndices2.size(); i++)
     {
       MapPoint *pMP = Kf1->GetMapPoint(vMatchedIndices2[i].first);
       if (pMP)
@@ -68,6 +68,37 @@ namespace defSLAM
 
     vMatchedIndices.insert(vMatchedIndices.end(), vMatchedIndices2.begin(),
                            vMatchedIndices2.end());
+  }
+
+
+  // from https://codereview.stackexchange.com/questions/206686/removing-by-indices-several-elements-from-a-vector
+  template <typename T, typename Iter>
+  void removeIndicesFromVector(std::vector<T>& v, Iter begin, Iter end)
+      // requires std::is_convertible_v<std::iterator_traits<Iter>::value_type, std::size_t>
+  {
+      assert(std::is_sorted(begin, end));
+      auto rm_iter = begin;
+      std::size_t current_index = 0;
+
+      const auto pred = [&](const T&) {
+          // any more to remove?
+          if (rm_iter == end) { return false; }
+          // is this one specified?
+          if (*rm_iter == current_index++) { return ++rm_iter, true; }
+          return false;
+      };
+
+      v.erase(std::remove_if(v.begin(), v.end(), pred), v.end());
+  }
+
+  template <typename T, typename S>
+  // requires std::is_convertible_v<S::value_type, std::size_t>
+  void removeIndicesFromVector(std::vector<T>& v, const S& rm)
+  {
+      using std::begin;
+      using std::end;
+      assert(std::is_sorted(begin(rm), end(rm)));
+      return removeIndicesFromVector(v, begin(rm), end(rm));
   }
 
   /*********************
@@ -104,7 +135,7 @@ namespace defSLAM
       invSigmas.push_back(sqrt(invSigma2));
     }
 
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
          i++)
     {
       x[i] = 0.0;
@@ -114,7 +145,7 @@ namespace defSLAM
     Warps::Warp::initialize(KP1, KP2, lambda, KF->umin, KF->umax, KF->vmin, KF->vmax,
                             KF->NCu, KF->NCv, KF->valdim, x);
 
-    for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
+    for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsU * 2;
          i++)
     {
       if (std::isnan(x[i]))
@@ -136,7 +167,7 @@ namespace defSLAM
     problem.Evaluate(optionsEv, &total_cost, &residuals, nullptr, nullptr);
     std::vector<size_t> outliers;
     // Remove points that bad predicted by the Warp.
-    for (size_t i(0); i < vMatchedIndices.size(); i++)
+    for (size_t i= 0 ; i < vMatchedIndices.size(); i++)
     {
       double error = residuals[2 * i] * residuals[2 * i] +
                      residuals[2 * i + 1] * residuals[2 * i + 1];
@@ -145,13 +176,14 @@ namespace defSLAM
         outliers.push_back(i);
       }
     }
-
-    for (auto i : outliers)
+    sort(outliers.begin(), outliers.end());
+    for (size_t i : outliers)
     {
       const auto idx2 = vMatchedIndices[i].second;
       KF2->EraseMapPointMatch(idx2);
-      vMatchedIndices.erase(vMatchedIndices.begin() + i);
+      //vMatchedIndices.erase(vMatchedIndices.begin() + i);
     }
+    removeIndicesFromVector(vMatchedIndices, outliers);
   }
 
   // It use the result of the schwarzian warp to search for map points.
@@ -166,7 +198,7 @@ namespace defSLAM
     std::vector<int> listMapPoints;
     std::vector<cv::KeyPoint> lskeypoints;
 
-    for (uint i(0); i < dKF->mpKeypointNorm.size(); i++)
+    for (unsigned int i(0); i < dKF->mpKeypointNorm.size(); i++)
     {
       auto pMP = dKF->GetMapPoint(i);
       if (!pMP)
@@ -189,7 +221,7 @@ namespace defSLAM
     Eigen::Matrix<double, _NumberOfControlPointsU * _NumberOfControlPointsV, 2>
         ControlPointsinitial;
 
-    uint us(0);
+    unsigned int us(0);
     for (int i(0); i < dKF->NCu; i++)
     {
       for (int j(0); j < dKF->NCv; j++)
@@ -210,7 +242,7 @@ namespace defSLAM
         dKF->NCv, dKF->valdim, x, ControlPoints, 0, 0);
 
     // Iterations over the keypoints with map point not assigned in kf1
-    for (uint i(0); i < lskeypoints.size(); i++)
+    for (unsigned int i(0); i < lskeypoints.size(); i++)
     {
       float x = KP2_e[i].pt.x * dKF2->fx + dKF2->cx;
       float y = KP2_e[i].pt.y * dKF2->fy + dKF2->cy;
@@ -224,7 +256,7 @@ namespace defSLAM
       float th = 2;
       const auto &features = dKF2->GetFeaturesInArea(x, y, th);
       // Iterations over the keypoints without map point assigned in kf2
-      for (uint j(0); j < features.size(); j++)
+      for (unsigned int j(0); j < features.size(); j++)
       {
         auto pMP = dKF2->GetMapPoint(features[j]);
         if (pMP)
@@ -269,7 +301,7 @@ namespace defSLAM
     int nmatches = 0;
 
     // Rotation Histogram (to check rotation consistency)
-    vector<int> rotHist[HISTO_LENGTH];
+    vector<vector<int>> rotHist(HISTO_LENGTH, vector<int>());
     for (int i = 0; i < HISTO_LENGTH; i++)
       rotHist[i].reserve(500);
     const float factor = 1.0f / HISTO_LENGTH;
@@ -398,7 +430,7 @@ namespace defSLAM
       int ind2 = -1;
       int ind3 = -1;
 
-      ComputeThreeMaxima(rotHist, HISTO_LENGTH, ind1, ind2, ind3);
+      ComputeThreeMaxima(&rotHist[0], HISTO_LENGTH, ind1, ind2, ind3);
 
       for (int i = 0; i < HISTO_LENGTH; i++)
       {

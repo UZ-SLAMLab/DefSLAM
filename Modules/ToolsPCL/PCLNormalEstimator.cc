@@ -46,7 +46,7 @@ PCLNormalEstimator::PCLNormalEstimator(std::vector<float> &Points, double radiou
 
     ne.compute(*cloud_normals);
 
-    for (uint i(0); i < cloud_normals->size(); i++)
+    for (unsigned int i(0); i < cloud_normals->size(); i++)
     {
         normals.push_back(cloud_normals->at(i).normal_x);
         normals.push_back(cloud_normals->at(i).normal_y);

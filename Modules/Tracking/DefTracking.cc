@@ -58,7 +58,9 @@ namespace defSLAM
     RegTemp = fSettings["Regularizer.temporal"];
     double a = fSettings["Regularizer.LocalZone"];
     double SaveResults = fSettings["Viewer.SaveResults"];
-    saveResults = bool(uint(SaveResults));
+    saveResults = bool((unsigned int)SaveResults);
+
+    output_path = (std::string) fSettings["File.outputdir"];
 
     cout << endl
          << "Defomation tracking Parameters: " << endl;
@@ -67,7 +69,7 @@ namespace defSLAM
     cout << "- Reg. Temporal: " << RegTemp << endl;
     cout << "- Reg. LocalZone: " << a << endl;
 
-    LocalZone = uint(a);
+    LocalZone = (unsigned int)a;
 
     ReliabilityThreshold = fSettings["Regularizer.Reliability"];
   }
@@ -174,7 +176,7 @@ namespace defSLAM
         {
           this->CreateNewKeyFrame();
         }
-        
+
         // We allow points with high innovation (considererd outliers by the Huber
         // Function) pass to the new keyframe, so that bundle adjustment will
         // finally decide if they are outliers or not. We don't want next frame to
@@ -319,7 +321,7 @@ namespace defSLAM
     // Save matching result
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
-        << uint(mCurrentFrame->mTimeStamp);
+        << (unsigned int) mCurrentFrame->mTimeStamp;
     std::cout << out.str() << " " << mI << " " << mO << " "
               << numberLocalMapPoints << std::endl;
     this->matches << out.str() << " " << mI << " " << mO << " "
@@ -374,7 +376,7 @@ namespace defSLAM
 
     /// Optimize frame pose with all matches with a rigid model to initialize the
     /// pose of the camera
-    Optimizer::poseOptimization(mCurrentFrame, myfile);
+    Optimizer::poseOptimization(mCurrentFrame);// , myfile);
 
     // Discard outliers
     int nmatchesMap = 0;
@@ -504,7 +506,7 @@ namespace defSLAM
           static_cast<GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {
@@ -565,7 +567,7 @@ namespace defSLAM
           static_cast<GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {
@@ -612,10 +614,9 @@ namespace defSLAM
         pKFini->GetMapPoint(i);
       }
 
-      double *Array;
-      Array = new double[_NumberOfControlPointsU * _NumberOfControlPointsV];
+      std::vector<double> Array(_NumberOfControlPointsU * _NumberOfControlPointsV);
 
-      for (uint i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV;
+      for (unsigned int i(0); i < _NumberOfControlPointsU * _NumberOfControlPointsV;
            i++)
       {
         Array[i] = 1;
@@ -634,7 +635,7 @@ namespace defSLAM
       cout << "New map created with " << mpMap->MapPointsInMap() << " points"
            << endl;
       mLastFrame = Frame(*mCurrentFrame);
-      mnLastKeyFrameId = uint(mCurrentFrame->mnId);
+      mnLastKeyFrameId = (unsigned int)mCurrentFrame->mnId;
       mpLastKeyFrame = pKFini;
       mvpLocalKeyFrames.push_back(pKFini);
       mvpLocalMapPoints = mpMap->GetAllMapPoints();

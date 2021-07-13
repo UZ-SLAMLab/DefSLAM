@@ -56,6 +56,7 @@ namespace defSLAM
 
     private:
         double RegInex, RegLap, RegTemp; // Regularizers for deformable tracking.
+        string output_path;
     };
 
 } // namespace defSLAM

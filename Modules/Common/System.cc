@@ -39,7 +39,7 @@
 #include <iomanip>
 #include <pangolin/pangolin.h>
 #include <thread>
-#include <unistd.h>
+//#include <unistd.h>
 
 namespace defSLAM
 {
@@ -214,7 +214,7 @@ namespace defSLAM
         // Wait until Local Mapping has effectively stopped
         while (!mpLocalMapper->isStopped())
         {
-          usleep(1000);
+            this_thread::sleep_for(chrono::microseconds(1000));
         }
 #endif
         mpTracker->InformOnlyTracking(true);
@@ -251,7 +251,7 @@ namespace defSLAM
     return Tcw;
   }
 
-  void System::Restart(uint localzone, uint propagationzone)
+  void System::Restart(unsigned int localzone, unsigned int propagationzone)
   {
     unique_lock<mutex> lock(MapPoint::mGlobalMutex);
     static_cast<DefMap *>(mpMap)->GetTemplate()->restart();
@@ -295,7 +295,7 @@ namespace defSLAM
         // Wait until Local Mapping has effectively stopped
         while (!mpLocalMapper->isStopped())
         {
-          usleep(2000);
+            this_thread::sleep_for(chrono::microseconds(2000));
         }
 #endif
         mpTracker->InformOnlyTracking(true);
@@ -329,7 +329,7 @@ namespace defSLAM
     {
       mpViewer->Updatetimestamp(timestamp);
       while (!mpViewer->go())
-        usleep(3000);
+          this_thread::sleep_for(chrono::microseconds(3000));
     }
 #endif
 
@@ -371,7 +371,7 @@ namespace defSLAM
         // Wait until Local Mapping has effectively stopped
         while (!mpLocalMapper->isStopped())
         {
-          usleep(2000);
+            this_thread::sleep_for(chrono::microseconds(2000));
         }
 #endif
         mpTracker->InformOnlyTracking(true);
@@ -405,7 +405,7 @@ namespace defSLAM
     {
       mpViewer->Updatetimestamp(timestamp);
       while (!mpViewer->go())
-        usleep(3000);
+          this_thread::sleep_for(chrono::microseconds(3000));
     }
 #endif
     unique_lock<mutex> lock2(mMutexState);
@@ -455,7 +455,7 @@ namespace defSLAM
     {
       mpViewer->RequestFinish();
       while (!mpViewer->isFinished())
-        usleep(5000);
+          this_thread::sleep_for(chrono::microseconds(5000));
     }
     mptViewer->join();
     delete mptViewer;
@@ -465,7 +465,7 @@ namespace defSLAM
       while (!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() ||
              mpLoopCloser->isRunningGBA())
       {
-        usleep(5000);
+          this_thread::sleep_for(chrono::microseconds(5000));
       }
 
     if (mpViewer)

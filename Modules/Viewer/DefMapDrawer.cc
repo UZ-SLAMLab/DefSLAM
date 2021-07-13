@@ -79,7 +79,7 @@ namespace defSLAM
           static_cast<DefMap *>(mpMap)->GetTemplate()->getNodes();
       std::vector<Node *> NodesVec(Nodes.begin(), Nodes.end());
 
-      for (uint i(0); i < NodesVec.size(); i++)
+      for (unsigned int i(0); i < NodesVec.size(); i++)
       {
         std::vector<double> pos;
         std::vector<double> proj;
@@ -173,7 +173,7 @@ namespace defSLAM
       std::set<Node *> Nodes = templateToDraw->getNodes();
       std::vector<Node *> NodesVec(Nodes.begin(), Nodes.end());
 
-      for (uint i(0); i < NodesVec.size(); i++)
+      for (unsigned int i(0); i < NodesVec.size(); i++)
       {
         std::vector<double> pos;
         std::vector<double> proj;
@@ -215,7 +215,7 @@ namespace defSLAM
         temp->addEdge(edge);
       }
       PointsRef.clear();
-      for (uint i(0); i < refKf->mvKeys.size(); i++)
+      for (unsigned int i(0); i < refKf->mvKeys.size(); i++)
       {
         MapPoint *pMP = refKf->GetMapPoint(i);
         if (pMP)
@@ -252,7 +252,7 @@ namespace defSLAM
   }
 
   // Draw the shape-at-rest of the template.
-  void DefMapDrawer::DrawTemplateAtRest(uint o)
+  void DefMapDrawer::DrawTemplateAtRest(unsigned int o)
   {
     std::unique_lock<std::mutex> M(
         static_cast<DefMap *>(mpMap)->MutexUpdating);
@@ -323,7 +323,7 @@ namespace defSLAM
             glColor3d((*itf)->R,(*itf)->G,(*itf)->B);
             std::array<Node*, 3>  Nodes((*itf)->getNodesArray());
 
-            for(uint i(0);i<3;i++){
+            for(unsigned int i(0);i<3;i++){
                 glVertex3f((Nodes[i])->x,(Nodes[i])->y,(Nodes[i])->z);
                 j++;
             }*/

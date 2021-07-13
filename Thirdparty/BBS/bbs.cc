@@ -28,6 +28,7 @@
 */
 
 #include "bbs.h"
+#include <vector>
 
 #ifndef NTHREADS
 #define NTHREADS 3
@@ -58,11 +59,16 @@ void normalize(double xmin, double xmax, int npts, double *x, int nb_x,
     }
   }
 }
+void normalize_with_inter(double xmin, double xmax, int npts, std::vector<double>& x, int nb_x, std::vector<double>& nx, std::vector<int>& inter)
+{
+    normalize_with_inter(xmin, xmax, npts, &x[0], nb_x, nx, inter);
+}
+
 
 /* Same as "normalize" but computes also the interval number to which the x's
  * belongs. */
-void normalize_with_inter(double xmin, double xmax, int npts, double *x,
-                          int nb_x, double *nx, int *inter) {
+void normalize_with_inter(double xmin, double xmax, int npts, double* x,
+                          int nb_x, std::vector<double>& nx, std::vector<int>& inter) {
   int ninter = npts - 3;
   double width_inter = (xmax - xmin) / ninter;
 
@@ -148,16 +154,16 @@ double get_deriv_fact(bbs_t *bbs, int uorder, int vorder) {
  * - du, dv: order of derivation. */
 void eval(bbs_t *bbs, double *ctrlpts, double *u, double *v, int nsites,
           double *val, int du, int dv) {
-  double nu[nsites];
-  double nv[nsites];
-  int interu[nsites];
-  int interv[nsites];
+  std::vector<double> nu(nsites);
+  std::vector<double>  nv(nsites);
+  std::vector<int>  interu(nsites);
+  std::vector<int> interv(nsites);
 
   // Compute the normalized evaluation values and their interval numbers
   normalize_with_inter(bbs->umin, bbs->umax, bbs->nptsu, u, nsites, nu, interu);
   normalize_with_inter(bbs->vmin, bbs->vmax, bbs->nptsv, v, nsites, nv, interv);
-
-#pragma omp parallel for num_threads(NTHREADS), schedule(guided)
+//num_threads(NTHREADS), schedule(guided)
+#pragma omp parallel for 
   for (int k = 0; k < nsites; ++k) {
     int iu, iv, d, ind;
     double basis_u[4];
@@ -209,15 +215,15 @@ int coloc(bbs_t *bbs, double *u, double *v, int nsites, double *pr, size_t *ir,
           size_t *jc) {
   int k, iu, iv, col, Iu, Iv;
   int ret_code = 0;
-  double nu[nsites];
-  double nv[nsites];
-  int interu[nsites];
-  int interv[nsites];
+  std::vector<double> nu(nsites);
+  std::vector<double> nv(nsites);
+  std::vector<int> interu(nsites);
+  std::vector<int> interv(nsites);
   double basis_u[4];
   double basis_v[4];
   int npts = bbs->nptsu * bbs->nptsv;
-  size_t nb_elem_col[npts];
-  size_t cur_ind[npts];
+  std::vector<size_t> nb_elem_col(npts);
+  std::vector<size_t> cur_ind(npts);
 
   // Compute the normalized evaluation values and their interval numbers
   normalize_with_inter(bbs->umin, bbs->umax, bbs->nptsu, u, nsites, nu, interu);
@@ -288,18 +294,18 @@ int coloc_deriv(bbs_t *bbs, double *u, double *v, int nsites, int du, int dv,
                 double *pr, size_t *ir, size_t *jc) {
   int k, iu, iv, col, Iu, Iv;
   int ret_code = 0;
-  double nu[nsites];
-  double nv[nsites];
-  int interu[nsites];
-  int interv[nsites];
+  std::vector<double> nu(nsites);
+  std::vector<double> nv(nsites);
+  std::vector<int> interu(nsites);
+  std::vector<int> interv(nsites);
   basis_func_t b_func_u = get_basis_ptr(du);
   basis_func_t b_func_v = get_basis_ptr(dv);
   double fact = get_deriv_fact(bbs, du, dv);
   double basis_u[4];
   double basis_v[4];
   int npts = bbs->nptsu * bbs->nptsv;
-  size_t nb_elem_col[npts];
-  size_t cur_ind[npts];
+  std::vector < size_t> nb_elem_col(npts);
+  std::vector < size_t> cur_ind(npts);
   // Compute the normalized evaluation values and their interval numbers
   normalize_with_inter(bbs->umin, bbs->umax, bbs->nptsu, u, nsites, nu, interu);
   normalize_with_inter(bbs->vmin, bbs->vmax, bbs->nptsv, v, nsites, nv, interv);

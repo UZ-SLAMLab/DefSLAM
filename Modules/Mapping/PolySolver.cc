@@ -154,7 +154,7 @@ namespace defSLAM
     {
         Eigen::Matrix<double, 1, 10> eqs1 = eqs->eqs1;
         Eigen::Matrix<double, 1, 10> eqs2 = eqs->eqs2;
-        uint i(0);
+        unsigned int i(0);
         const double *x = parameters[0];
         // Bi-Cubic polynomials
         e[0] = eqs1(i, 0) * pow(x[0], 3) +

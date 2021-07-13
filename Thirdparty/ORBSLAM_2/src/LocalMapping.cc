@@ -25,7 +25,7 @@
 #include "Optimizer.h"
 
 #include <mutex>
-#include <unistd.h>
+//#include <unistd.h>
 
 namespace ORB_SLAM2
 {
@@ -92,7 +92,7 @@ namespace ORB_SLAM2
         // Safe area to stop
         while (isStopped() && !CheckFinish())
         {
-          usleep(3000);
+            this_thread::sleep_for(chrono::microseconds(3000));
         }
         if (CheckFinish())
           break;
@@ -107,7 +107,7 @@ namespace ORB_SLAM2
 
       SetAcceptKeyFrames(true);
 
-      usleep(3000);
+      this_thread::sleep_for(chrono::microseconds(3000));
     }
 
     SetFinish();
@@ -176,7 +176,7 @@ namespace ORB_SLAM2
     list<MapPoint *>::iterator lit = mlpRecentAddedMapPoints.begin();
     const unsigned long int nCurrentKFid = mpCurrentKeyFrame->mnId;
 
-    uint vecesPorFR(0);
+    unsigned int vecesPorFR(0);
     while (lit != mlpRecentAddedMapPoints.end())
     {
       MapPoint *pMP = *lit;
@@ -736,7 +736,7 @@ namespace ORB_SLAM2
         if (!mbResetRequested)
           break;
       }
-      usleep(3000);
+      this_thread::sleep_for(chrono::microseconds(3000));
     }
   }
 

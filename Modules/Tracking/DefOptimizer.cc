@@ -163,7 +163,7 @@ namespace defSLAM
       const int its[4] = {10, 10, 10, 10};
 
       int nBad = 0;
-      for (uint ai = 0; ai < 2; ai++)
+      for (unsigned int ai = 0; ai < 2; ai++)
       {
         for (size_t it = 0; it < 4; it++)
         {
@@ -249,7 +249,7 @@ namespace defSLAM
     // the deformation tracking to estimate the map deformation and camera pose each
     // frame.
     int DefPoseOptimization(Frame *pFrame, Map *mMap, double RegLap, double RegInex,
-                            double RegTemp, uint NeighboursLayers)
+                            double RegTemp, unsigned int NeighboursLayers)
     {
       g2o::SparseOptimizer optimizer;
       g2o::BlockSolverX::LinearSolverType *linearSolver;
@@ -271,7 +271,7 @@ namespace defSLAM
       vSE3->setFixed(false);
       optimizer.addVertex(vSE3);
       setMeshNodes(optimizer, mMap);
-      uint nBad(0);
+      unsigned int nBad(0);
       // Set MapPoint vertices
       const int N = pFrame->N;
       const int Ncorr = pFrame->mvpMapPointsCorr.size();
@@ -318,7 +318,7 @@ namespace defSLAM
               e->resize(NodesMp.size() + 1);
               e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex *>(
                                   optimizer.vertex(0)));
-              uint ui(1);
+              unsigned int ui(1);
               Eigen::Vector3d bary;
               bary << static_cast<DefMapPoint *>(pMP)->b1,
                   static_cast<DefMapPoint *>(pMP)->b2,
@@ -385,7 +385,7 @@ namespace defSLAM
       std::set<Node *> NewOptNodes;
       OptLap = ViewedNodes;
       int a(0);
-      for (uint n(0); n < (NeighboursLayers); n++)
+      for (unsigned int n(0); n < (NeighboursLayers); n++)
       {
         for (std::set<Node *>::iterator it = ViewedNodes.begin();
              it != ViewedNodes.end(); it++)
@@ -423,7 +423,7 @@ namespace defSLAM
           std::set<Node *> Neighbours = (*it)->GetNeighbours();
           std::set<Edge *> edges = (*it)->getEdges();
 
-          uint Index_Neigh(0);
+          unsigned int Index_Neigh(0);
           for (std::set<Edge *>::iterator ite = edges.begin();
                ite != edges.end(); ite++)
           {
@@ -433,7 +433,7 @@ namespace defSLAM
             e->SetNeighbourgEdge(Index_Neigh);
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex *>(
                                 optimizer.vertex((*it)->getIndex())));
-            uint j(0);
+            unsigned int j(0);
             std::vector<double> weights;
             for (std::set<Node *>::iterator ite2 = Neighbours.begin();
                  ite2 != Neighbours.end(); ite2++)
@@ -484,7 +484,7 @@ namespace defSLAM
       {
         g2o::EdgesStreching *e = new g2o::EdgesStreching;
         // e->resize(2);
-        uint is(0);
+        unsigned int is(0);
         std::set<Node *> medgesnode = (*ite)->getNodes();
         for (std::set<Node *>::iterator itn = medgesnode.begin();
              itn != medgesnode.end(); itn++)
@@ -537,7 +537,7 @@ namespace defSLAM
       }
       double sumError(0.0);
       std::vector<float> vectorError;
-      uint n(0);
+      unsigned int n(0);
       for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++)
       {
         g2o::EdgeNodesCamera *e = vpEdgesMono[i];
@@ -625,7 +625,7 @@ namespace defSLAM
       /////////// OBSERVATIONS ////////////////////////
       const float deltaMono = 0.5; // sqrt(5.991);
       unique_lock<mutex> lock(MapPoint::mGlobalMutex);
-      for (uint i = 0; i < matches.size(); i++)
+      for (unsigned int i = 0; i < matches.size(); i++)
       {
         // Monocular observation
         nInitialCorrespondences++;
@@ -709,15 +709,15 @@ namespace defSLAM
         if (!(*it)->isBoundary())
         {
           std::set<Node *> Neighbours = (*it)->GetNeighbours();
-          std::map<Node *, uint> DictionaryNodeNumber;
-          uint ind(0);
+          std::map<Node *, unsigned int> DictionaryNodeNumber;
+          unsigned int ind(0);
           for (std::set<Node *>::iterator ite = Neighbours.begin();
                ite != Neighbours.end(); ite++)
           {
             DictionaryNodeNumber[*ite] = ind;
             ind++;
           }
-          uint Index_Neigh(0);
+          unsigned int Index_Neigh(0);
           for (std::set<Node *>::iterator ite = Neighbours.begin();
                ite != Neighbours.end(); ite++)
           {
@@ -727,9 +727,9 @@ namespace defSLAM
             e->SetNeighbourgEdge(Index_Neigh);
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex *>(
                                 optimizer.vertex((*it)->getIndex())));
-            uint j(0);
+            unsigned int j(0);
             std::vector<double> weights;
-            std::vector<std::pair<uint, uint>> NeightWeights;
+            std::vector<std::pair<unsigned int, unsigned int>> NeightWeights;
 
             for (std::set<Node *>::iterator ite2 = Neighbours.begin();
                  ite2 != Neighbours.end(); ite2++)
@@ -742,7 +742,7 @@ namespace defSLAM
               (dynamic_cast<g2o::OptimizableGraph::Vertex *>(
                    optimizer.vertex((*it)->getIndex())))
                   ->setMarginalized(false);
-              NeightWeights.push_back(std::pair<uint, uint>(
+              NeightWeights.push_back(std::pair<unsigned int, unsigned int>(
                   DictionaryNodeNumber[(*it)->NodesjJ_1J[(*ite2)].first],
                   DictionaryNodeNumber[(*it)->NodesjJ_1J[(*ite2)].second]));
               weights.push_back((*it)->weights[*ite2]);
@@ -786,7 +786,7 @@ namespace defSLAM
       {
         g2o::EdgesStreching *e = new g2o::EdgesStreching;
         // e->resize(2);
-        uint is(0);
+        unsigned int is(0);
         std::set<Node *> medgesnode = (*ite)->getNodes();
         for (std::set<Node *>::iterator itn = medgesnode.begin();
              itn != medgesnode.end(); itn++)
@@ -814,7 +814,7 @@ namespace defSLAM
       optimizer.setVerbose(false);
       optimizer.initializeOptimization(0);
       optimizer.optimize(50);
-      uint i(0);
+      unsigned int i(0);
       for (auto edgemono : vpEdgesMono)
       {
         auto a = edgemono->errorData();
@@ -930,7 +930,7 @@ namespace defSLAM
       // The two first index are for the temporal constrains
       std::set<Node *> Nodes =
           static_cast<DefMap *>(mMap)->GetTemplate()->getNodes();
-      uint j(1);
+      unsigned int j(1);
       if (prop)
         j = 0;
 

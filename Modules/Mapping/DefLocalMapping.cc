@@ -34,7 +34,7 @@
 #include <ctime>
 #include <numeric>
 #include <stdio.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 namespace defSLAM
 {
@@ -56,6 +56,7 @@ namespace defSLAM
         chiLimit_(0.07)
   {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
+    output_path = (std::string)fSettings["File.outputdir"];
     pointsToTemplate_ = fSettings["LocalMapping.pointsToTemplate"];
     chiLimit_ = fSettings["LocalMapping.chiLimit"];
     double reg_ = fSettings["LocalMapping.Schwarp.Regularizer"];
@@ -88,7 +89,7 @@ namespace defSLAM
         // Safe area to stop
         while (isStopped() && !CheckFinish())
         {
-          usleep(3000);
+            this_thread::sleep_for(chrono::microseconds(3000));
         }
         if (CheckFinish())
           break;
@@ -101,7 +102,7 @@ namespace defSLAM
 
       SetAcceptKeyFrames(true);
 
-      usleep(100000);
+      this_thread::sleep_for(chrono::microseconds(100000));
     }
 
     SetFinish();
@@ -215,7 +216,7 @@ namespace defSLAM
     if (saveResults_)
     {
       float scale =
-          static_cast<GroundTruthKeyFrame *>(kfForTemplate)->estimateAngleErrorAndScale();
+          static_cast<GroundTruthKeyFrame *>(kfForTemplate)->estimateAngleErrorAndScale(output_path);
       std::cout << "Scale Error Keyframe : " << scale << " " << std::endl;
     }
     if (kfForTemplate != mpMap->GetAllKeyFrames()[0])
@@ -268,7 +269,7 @@ namespace defSLAM
     double threshold_value = 1;
     //     1: Binary Inverted
     cv::threshold(mask, mask, threshold_value, max_BINARY_value, 0);
-    uint newPoints(0);
+    unsigned int newPoints(0);
     for (size_t i = 0; i < nval; i++)
     {
       MapPoint *pMP = referenceKF_->GetMapPoint(i);

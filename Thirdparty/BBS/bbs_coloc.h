@@ -28,21 +28,21 @@
 
 namespace BBS
 {
-    void colocEigen(bbs_t *bbs, double *u, double *v, int nsites,
+    void colocEigen(bbs_t *bbs, std::vector<double>& u, std::vector<double>& v, int nsites,
                     Eigen::MatrixXd &colocMatrix);
 
-    int coloc_derivEigen(bbs_t *bbs, double *u, double *v, int nsites, int du,
+    int coloc_derivEigen(bbs_t *bbs, std::vector<double>& u, std::vector<double>& v, int nsites, int du,
                          int dv, Eigen::MatrixXd &colocMatrix);
 
-    int coloc_derivEigen(bbs_t *bbs, double *u, double *v, int nsites, int du,
-                         int dv, Eigen::MatrixXf &colocMatrix);
+//     int coloc_derivEigen(bbs_t *bbs, std::vector<double>& u, std::vector<double>& v, int nsites, int du,
+//                          int dv, Eigen::MatrixXf &colocMatrix);
 
     void BendingEigen(bbs_t *bbs, double err,
                       Eigen::SparseMatrix<double> &benMatrix);
 
     void BendingEigen(bbs_t *bbs, double err, Eigen::MatrixXd &benMatrix);
 
-    void EvalEigen(bbs_t *bbs, const double *ctrlpts, double *u, double *v,
+    void EvalEigen(bbs_t *bbs, const std::vector<double>& ctrlpts, std::vector<double>& u, std::vector<double>& v,
                    int nval, Eigen::MatrixXd &val, int du, int dv);
 } // namespace BBS
 
