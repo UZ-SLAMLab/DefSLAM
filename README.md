@@ -72,7 +72,7 @@ This will create **libDefSLAM.so**  at *lib* folder and the executables **simple
 # 5. Datasets
 ## Mandala dataset
 Download the sequences with the link: 
-[Mandala Dataset](https://drive.google.com/file/d/1i3i2f3Ph22DfZ6AfXKjPRb8WrGNw_41C/view?usp=sharing)
+[Mandala Dataset](https://drive.google.com/file/d/1GNV346EaJDwiHjOh9FqNmMJrifbWnk7o/view?usp=share_link)
 
 It contains the five sequences presented in the paper. The mandala deformation becomes more challenging with the number of dataset.
 
@@ -86,7 +86,7 @@ The dataset is organized as follows:
 ## Hamlyn dataset  
 1. Download the dataset from the webpage [Hamlyn](http://hamlyn.doc.ic.ac.uk/vision/). 
 
-2. To downloaded in the format run in our paper [Hamlyn not official](https://drive.google.com/file/d/1fG6RNQlBqwDKZSRUuiEuoMbVosMo5u8J/view?usp=sharing)
+2. To downloaded in the format run in our paper [Hamlyn not official](https://drive.google.com/file/d/16NhQFCvn3aHFuR10bUwosjIyL_xGcv-P/view?usp=share_link)
 
 
 
