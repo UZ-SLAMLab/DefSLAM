@@ -105,6 +105,8 @@ namespace defSLAM
     uint LocalZone;
     ofstream myfile;
     bool saveResults;
+  private:
+      string output_path;
   };
 
 } // namespace defSLAM

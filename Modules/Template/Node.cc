@@ -26,7 +26,7 @@
 namespace defSLAM
 {
   // Constructor.
-  Node::Node(double x, double y, double z, uint indx, Template *temp)
+  Node::Node(double x, double y, double z, unsigned int indx, Template *temp)
       : x(x), y(y), z(z), xO(x), yO(y), zO(z), proju(0), projv(0), posVecDrawer(-1), indx(indx), mTemplate(temp),
         role(NONOBS), Boundary(false)
   {
@@ -44,10 +44,10 @@ namespace defSLAM
 
   // Get index in the optimization. This index
   // makes things easier to work with the optimizer.
-  uint Node::getIndex() { return indx; }
+  unsigned int Node::getIndex() { return indx; }
 
   // Set index in the optimization.
-  void Node::setIndex(uint i) { indx = i; }
+  void Node::setIndex(unsigned int i) { indx = i; }
 
   // Add edge that contain this node.
   void Node::addEdge(Edge *edge) { mEdge.insert(edge); }

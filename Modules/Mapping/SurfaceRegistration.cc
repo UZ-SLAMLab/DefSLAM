@@ -55,9 +55,9 @@ namespace defSLAM
     cloud1pc.reserve(refKF->mvKeys.size());
     cloud2pc.reserve(refKF->mvKeys.size());
 
-    uint CounterMP(0);
+    unsigned int CounterMP(0);
     // Set up the 3D points cloud to make the sim(3) alignment
-    for (uint i(0); i < refKF->mvKeys.size(); i++)
+    for (unsigned int i(0); i < refKF->mvKeys.size(); i++)
     {
       MapPoint *pMP = refKF->GetMapPoint(i);
       if (pMP)
@@ -115,9 +115,9 @@ namespace defSLAM
     transform_ << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
     Eigen::Matrix4d transform_d;
-    for (uint i(0); i < 4; i++)
+    for (unsigned int i(0); i < 4; i++)
     {
-      for (uint j(0); j < 4; j++)
+      for (unsigned int j(0); j < 4; j++)
       {
         transform_d(i, j) = transform_(i, j);
       }

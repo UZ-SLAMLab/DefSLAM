@@ -28,6 +28,12 @@
 #include <opencv2/core/core.hpp>
 #include "Modules/ToolsPCL/SmootherMLS.h"
 
+#ifndef M_PI
+// Copied from math.h
+# define M_PI   3.14159265358979323846     // pi
+# define M_PI_2    1.57079632679489661923  // pi/2
+
+#endif
 namespace defSLAM
 {
   /*****
@@ -52,7 +58,7 @@ namespace defSLAM
    * pcl library to determinate the normals of the point cloud and compares them 
    * with the estimated by the NRSfM and the SfN. NRSfM tends to be quite noisy.
    */
-  float GroundTruthKeyFrame::estimateAngleErrorAndScale()
+  float GroundTruthKeyFrame::estimateAngleErrorAndScale(std::string output_path)
   {
     size_t nval = this->mvKeysUn.size();
     cv::Mat iLeft(this->imGray.clone());
@@ -68,7 +74,7 @@ namespace defSLAM
     std::vector<float> zs;
     std::vector<float> zs_est;
 
-    for (uint i = 0; i < nval; i++)
+    for (unsigned int i = 0; i < nval; i++)
     {
       MapPoint *pMP = this->GetMapPoint(i);
       if (!pMP)
@@ -79,10 +85,10 @@ namespace defSLAM
 
       this->surface->get3DSurfacePoint(i, pos);
       cv::Mat PosMat(4, 1, CV_32F);
-      for (uint i(0); i < 3; i++)
+      for (unsigned int i(0); i < 3; i++)
         PosMat.at<float>(i) = pos(i);
 
-      pos(3) = 1;
+      PosMat.at<float>(3) = 1;
 
       cv::KeyPoint kp = this->mvKeysUn[i];
 
@@ -98,7 +104,7 @@ namespace defSLAM
         // For normal estimation
         if (this->surface->getNormalSurfacePoint(i, normal))
         {
-          for (uint j(0); j < 3; j++)
+          for (unsigned int j(0); j < 3; j++)
             normals_est.push_back(normal(j));
           points_gt.push_back(ps[0]);
           points_gt.push_back(ps[1]);
@@ -136,7 +142,7 @@ namespace defSLAM
     double sumIso(0.0);
     double sumSfN(0.0);
 
-    for (uint i(0); i < normals_gt.size() / 3; i++)
+    for (unsigned int i(0); i < normals_gt.size() / 3; i++)
     {
       // std::cout << "Normal " << i << std::endl;
       Eigen::Vector3f nest;
@@ -190,10 +196,10 @@ namespace defSLAM
     static int is(0);
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
-        << uint(this->mTimeStamp);
-    std::string name("ErrorAngIso" + out.str() + "-" + std::to_string(is) +
+        << (unsigned int)(this->mTimeStamp);
+    std::string name(output_path+"/ErrorAngIso" + out.str() + "-" + std::to_string(is) +
                      ".txt");
-    std::string name2("ErrorAngSfN" + out.str() + "-" + std::to_string(is) +
+    std::string name2(output_path+"/ErrorAngSfN" + out.str() + "-" + std::to_string(is) +
                       ".txt");
     is++;
     GroundTruthTools::saveResults(ErrorAngleIso, name);

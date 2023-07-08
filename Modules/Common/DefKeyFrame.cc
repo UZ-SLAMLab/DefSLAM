@@ -96,7 +96,7 @@ namespace defSLAM
     // Calculate From One To Two
     Eigen::MatrixXf PtNormalizedkp1(3, mvKeysUn.size()),
         Pt2Dkp1(3, mvKeysUn.size());
-    for (uint ikp = 0; ikp < mvKeysUn.size(); ikp++)
+    for (unsigned int ikp = 0; ikp < mvKeysUn.size(); ikp++)
     {
       const cv::KeyPoint &kp1 = this->mvKeysUn[ikp];
       Pt2Dkp1(0, ikp) = kp1.pt.x;
@@ -108,7 +108,7 @@ namespace defSLAM
     cv::cv2eigen(Kinvcv, Kinv);
     PtNormalizedkp1 << Kinv * Pt2Dkp1;
     mpKeypointNorm.resize(this->mvKeysUn.size());
-    for (uint ikp = 0; ikp < mvKeysUn.size(); ikp++)
+    for (unsigned int ikp = 0; ikp < mvKeysUn.size(); ikp++)
     {
       mpKeypointNorm[ikp].pt.x = (PtNormalizedkp1(0, ikp));
       mpKeypointNorm[ikp].pt.y = (PtNormalizedkp1(1, ikp));

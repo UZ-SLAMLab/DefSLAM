@@ -289,7 +289,7 @@ namespace ORB_SLAM2
     // Compute distances between them
     const size_t N = vDescriptors.size();
 
-    float Distances[N][N];
+    std::vector<std::vector<int>> Distances(N, std::vector<int>(N, 0.0));
     for (size_t i = 0; i < N; i++)
     {
       Distances[i][i] = 0;
@@ -307,7 +307,7 @@ namespace ORB_SLAM2
     int BestIdx = 0;
     for (size_t i = 0; i < N; i++)
     {
-      vector<int> vDists(Distances[i], Distances[i] + N);
+      vector<int> vDists (Distances[i].begin(), Distances[i].end());  // not sure that is correct
       sort(vDists.begin(), vDists.end());
       int median = vDists[0.5 * (N - 1)];
 

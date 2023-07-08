@@ -38,7 +38,7 @@
 
 #include <iostream>
 #include <mutex>
-#include <unistd.h>
+//#include <unistd.h>
 #include <set_MAC.h>
 
 using namespace std;
@@ -57,8 +57,12 @@ namespace ORB_SLAM2
         mpMap(pMap), mnLastRelocFrameId(0),
         viewerOn(viewerOn)
   {
-    // Load camera parameters from settings file
+
+
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
+	// Load output dir
+    output_path = (std::string) fSettings["File.outputdir"];
+    // Load camera parameters from settings file
     float fx = fSettings["Camera.fx"];
     float fy = fSettings["Camera.fy"];
     float cx = fSettings["Camera.cx"];
@@ -124,7 +128,7 @@ namespace ORB_SLAM2
     int fIniThFAST = fSettings["ORBextractor.iniThFAST"];
     int fMinThFAST = fSettings["ORBextractor.minThFAST"];
     double SaveResults = fSettings["Viewer.SaveResults"];
-    saveResults = bool(uint(SaveResults));
+    saveResults = bool((unsigned int)SaveResults);
     mpORBextractorLeft = new ORBextractor(nFeatures, fScaleFactor, nLevels,
                                           fIniThFAST, fMinThFAST);
 
@@ -143,8 +147,8 @@ namespace ORB_SLAM2
     cout << "- Scale Factor: " << fScaleFactor << endl;
     cout << "- Initial Fast Threshold: " << fIniThFAST << endl;
     cout << "- Minimum Fast Threshold: " << fMinThFAST << endl;
-    matches.open("Matches.txt");
-    scalefile.open("ScaleVariation.txt");
+    matches.open(output_path+"/Matches.txt");
+    scalefile.open(output_path+"/ScaleVariation.txt");
     if (sensor == System::STEREO || sensor == System::RGBD)
     {
       mThDepth = mbf * (float)fSettings["ThDepth"] / fx;
@@ -160,7 +164,7 @@ namespace ORB_SLAM2
       else
         mDepthMapFactor = 1.0f / mDepthMapFactor;
     }
-    MapPointFile.open("MapPointUsage.txt");
+    MapPointFile.open(output_path+"/MapPointUsage.txt");
   }
 
   void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -382,7 +386,7 @@ namespace ORB_SLAM2
                   mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)
-          ->Estimate3DError(mpMap, scale);
+          ->Estimate3DError(mpMap, scale, output_path);
       mpMapDrawer->UpdatePoints(mCurrentFrame, scale);
     }
     return mCurrentFrame->mTcw.clone();
@@ -435,7 +439,7 @@ namespace ORB_SLAM2
           static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)->Estimate3DScale(mpMap);
       scalefile << mCurrentFrame->mTimeStamp << " " << scale << std::endl;
       double error = static_cast<defSLAM::GroundTruthFrame *>(mCurrentFrame)
-                         ->Estimate3DError(mpMap, scale);
+                         ->Estimate3DError(mpMap, scale, output_path);
 
       if (viewerOn)
       {
@@ -1267,7 +1271,7 @@ namespace ORB_SLAM2
 
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
-        << uint(mCurrentFrame->mTimeStamp);
+        << (unsigned int) mCurrentFrame->mTimeStamp;
     std::cout << out.str() << " " << mI << " " << mO << " "
               << numberLocalMapPoints << std::endl;
     this->matches << out.str() << " " << mI << " " << mO << " "
@@ -1801,7 +1805,8 @@ namespace ORB_SLAM2
     {
       mpViewer->RequestStop();
       while (!mpViewer->isStopped())
-        usleep(3000);
+        this_thread::sleep_for(chrono::microseconds(3000));
+       // usleep(3000);
     }
 
     // Reset Local Mapping
@@ -1879,10 +1884,10 @@ namespace ORB_SLAM2
 
   void Tracking::UpdatekeyPointsanddist()
   {
-    std::vector<std::pair<std::pair<uint, uint>, double>> keyanddist;
-    uint N = this->mCurrentFrame->mvKeys.size();
+    std::vector<std::pair<std::pair<uint, unsigned int>, double>> keyanddist;
+    unsigned int N = this->mCurrentFrame->mvKeys.size();
 
-    for (uint i = 0; i < N; i++)
+    for (unsigned int i = 0; i < N; i++)
     {
       MapPoint *pMP = this->mCurrentFrame->mvpMapPoints[i];
       if (pMP)
@@ -1890,17 +1895,17 @@ namespace ORB_SLAM2
         if (!this->mCurrentFrame->mvbOutlier[i])
         {
           cv::Mat wposw = pMP->GetWorldPos();
-          uint x = this->mCurrentFrame->mvKeys[i].pt.x;
-          uint y = this->mCurrentFrame->mvKeys[i].pt.y;
+          unsigned int x = this->mCurrentFrame->mvKeys[i].pt.x;
+          unsigned int y = this->mCurrentFrame->mvKeys[i].pt.y;
           cv::Mat row = cv::Mat::ones(1, 1, CV_32F);
           wposw.push_back(row);
           cv::Mat wposc = this->mCurrentFrame->mTcw * wposw;
-          std::pair<uint, uint> kp = std::pair<uint, uint>(x, y);
+          std::pair<uint, unsigned int> kp = std::pair<uint, unsigned int>(x, y);
           /*    keyanddist.push_back(std::pair<std::pair<uint,uint>,double>(kp,
                                                                             sqrt(wposc.at<float>(0)* wposc.at<float>(0)+ wposc.at<float>(1)* wposc.at<float>(1)+ wposc.at<float>(2)* wposc.at<float>(2))));
             */
           keyanddist
-              .push_back(std::pair<std::pair<uint, uint>, double>(
+              .push_back(std::pair<std::pair<uint, unsigned int>, double>(
                   kp, wposc.at<float>(2)));
         }
       }

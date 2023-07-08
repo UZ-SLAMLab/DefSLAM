@@ -28,6 +28,7 @@
 #include "Facet.h"
 #include <mutex>
 #include <opencv2/core/core.hpp>
+#include <unordered_map>
 
 namespace ORB_SLAM2
 {

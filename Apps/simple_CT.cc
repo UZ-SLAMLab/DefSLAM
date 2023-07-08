@@ -1,7 +1,7 @@
 #include <System.h>
 #include <Viewer.h>
 #include <opencv2/core/core.hpp>
-#include <unistd.h>
+//#include <unistd.h>
 
 void loadCT(string, cv::Mat &);
 
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
   cv::initUndistortRectifyMap(K_l, D_l, R_l, P_l.rowRange(0, 3).colRange(0, 3),
                               cv::Size(cols_l, rows_l), CV_32F, M1l, M2l);
 
-  uint i(0);
+  unsigned int i(0);
   defSLAM::System SLAM(arg2, arg, true);
   while (true)
   {
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     std::cout << i << " " << (double(i) / 25.0 + 0.466667) * 30 << " "
               << int((double(i) / 25.0 + 0.466667) * 30) << " "
               << int((double(i) / 25.0 + 0.466667) * 30) % 20 << std::endl;
-    uint GTNum = int((double(i) / 25.0 + 0.466667) * 30) % 20;
+    unsigned int GTNum = int((double(i) / 25.0 + 0.466667) * 30) % 20;
     cv::Mat CTdepth(imLeft.rows, imLeft.cols, CV_32FC1);
     string CTGTname = CTs + to_string(GTNum) + ".txt";
     loadCT(CTGTname, CTdepth);

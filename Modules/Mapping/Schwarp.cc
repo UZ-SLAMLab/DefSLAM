@@ -48,12 +48,12 @@ namespace Warps
     bbs.vmax = vmax;
     bbs.nptsv = NCv;
     bbs.valdim = valdim;
-    double u[KP1.size()];
-    double v[KP1.size()];
+    std::vector<double> u(KP1.size());
+    std::vector<double> v(KP1.size());
 
     Eigen::MatrixXd q2;
     q2.resize(KP1.size(), 2);
-    uint i(0);
+    unsigned int i(0);
     Eigen::MatrixXd q1;
     q1.resize(KP2.size(), 2);
     for (std::vector<cv::KeyPoint>::const_iterator it = KP1.begin();
@@ -82,9 +82,9 @@ namespace Warps
         Eigen::MatrixXd::Zero(ColocGen.rows(), ColocGen.cols()),
         -ColocGen * double(fy);
 
-    for (uint i(0); i < KP1.size() * 2; i++)
+    for (unsigned int i(0); i < KP1.size() * 2; i++)
     {
-      for (uint j(0); j < _NumberOfControlPointsU * _NumberOfControlPointsV * 2;
+      for (unsigned int j(0); j < _NumberOfControlPointsU * _NumberOfControlPointsV * 2;
            j++)
       {
         Jdata[i * _NumberOfControlPointsU * _NumberOfControlPointsV * 2 + j] =
@@ -111,12 +111,12 @@ namespace Warps
     bbs.vmax = vmax;
     bbs.nptsv = NCv;
     bbs.valdim = valdim;
-    double u[KP1.size()];
-    double v[KP1.size()];
+    std::vector<double> u(KP1.size());
+    std::vector<double> v(KP1.size());
 
     Eigen::MatrixXd q2;
     q2.resize(KP1.size(), 2);
-    uint i(0);
+    unsigned int i(0);
     Eigen::MatrixXd q1;
     q1.resize(KP2.size(), 2);
     for (std::vector<cv::KeyPoint>::iterator it = KP1.begin(); it != KP1.end();
@@ -163,7 +163,7 @@ namespace Warps
       std::vector<cv::KeyPoint> &KP1, double umin, double umax, double vmin,
       double vmax, int NCu, int NCv, int valdim,
       double (&x)[_NumberOfControlPointsU * _NumberOfControlPointsV * 2],
-      Eigen::MatrixXd &Val, uint a1, uint b)
+      Eigen::MatrixXd &Val, unsigned int a1, unsigned int b)
   {
     BBS::bbs_t bbs;
     bbs.umin = umin;
@@ -179,9 +179,9 @@ namespace Warps
                Eigen::ColMajor>
         ControlPoints(x);
 
-    double Array[ControlPoints.rows() * 2];
-    double u[KP1.size()];
-    double v[KP1.size()];
+    std::vector<double> Array(ControlPoints.rows() * 2);
+    std::vector<double> u(KP1.size());
+    std::vector<double> v(KP1.size());
     for (int n = 0; n < 2; ++n)
     {
       for (int l = 0; l < ControlPoints.rows(); ++l)
@@ -193,7 +193,7 @@ namespace Warps
     }
     ///// REPROJECTION ERROR
 
-    for (uint i(0); i < KP1.size(); i++)
+    for (unsigned int i(0); i < KP1.size(); i++)
     {
       u[i] = KP1[i].pt.x;
       v[i] = KP1[i].pt.y;
@@ -202,11 +202,10 @@ namespace Warps
     Eigen::MatrixXd val;
     val.resize(KP1.size(), 2);
 
-    BBS::EvalEigen(&bbs, static_cast<double *>(Array), u, v, KP1.size(), val, a1,
-                   b);
+    BBS::EvalEigen(&bbs, Array, u, v, KP1.size(), val, a1, b);
 
     std::vector<cv::KeyPoint> a;
-    for (uint i(0); i < KP1.size(); i++)
+    for (unsigned int i(0); i < KP1.size(); i++)
     {
       cv::KeyPoint kpoint;
       kpoint.pt.x = (val(i, 0));
@@ -214,9 +213,9 @@ namespace Warps
       a.push_back(kpoint);
     }
 
-    double X[_NumberOfControlPointsU * _NumberOfControlPointsV];
-    double Y[_NumberOfControlPointsU * _NumberOfControlPointsV];
-    uint us(0);
+    std::vector<double> X(_NumberOfControlPointsU * _NumberOfControlPointsV);
+    std::vector<double> Y(_NumberOfControlPointsU * _NumberOfControlPointsV);
+    unsigned int us(0);
     for (int i(0); i < bbs.nptsu; i++)
     {
       for (int j(0); j < bbs.nptsv; j++)
@@ -227,7 +226,7 @@ namespace Warps
       }
     }
 
-    BBS::EvalEigen(&bbs, static_cast<double *>(Array), X, Y,
+    BBS::EvalEigen(&bbs,Array , X, Y,
                    _NumberOfControlPointsU * _NumberOfControlPointsV, Val, 0, 0);
 
     return a;
@@ -237,7 +236,7 @@ namespace Warps
                       double **jacobians) const
   {
     {
-      const uint rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
+      const unsigned int rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
       Eigen::Map<
           const Eigen::Matrix<
               double, _NumberOfControlPointsU * _NumberOfControlPointsV, 2>,
@@ -245,9 +244,9 @@ namespace Warps
           ControlPoints(parameters[0]);
 
       BBS::bbs_t b(bbs);
-      double Array[ControlPoints.rows() * 2];
-      double u[KP1.size()];
-      double v[KP1.size()];
+      std::vector<double> Array(ControlPoints.rows() * 2);
+      std::vector<double> u(KP1.size());
+      std::vector<double> v(KP1.size());
 
       // Eigen::Matrix<double,_NumberOfControlPointsU*_NumberOfControlPointsV,2>
       // CP = ControlPoints.cast<double>();
@@ -262,7 +261,7 @@ namespace Warps
       }
 
       ///// REPROJECTION ERROR
-      for (uint i(0); i < KP1.size(); i++)
+      for (unsigned int i(0); i < KP1.size(); i++)
       {
         u[i] = KP1[i].pt.x;
         v[i] = KP1[i].pt.y;
@@ -273,7 +272,7 @@ namespace Warps
 
       BBS::EvalEigen(&b, (Array), u, v, KP1.size(), val, 0, 0);
 
-      for (uint i(0); i < KP1.size(); i++)
+      for (unsigned int i(0); i < KP1.size(); i++)
       {
         residuals[i] = invSigmas[i] * (double(KP2[i].pt.x) - val(i, 0)) * fx;
         residuals[i + KP1.size()] =
@@ -282,16 +281,16 @@ namespace Warps
 
       if (jacobians != NULL && jacobians[0] != NULL)
       {
-        for (uint i(0); i < KP2.size() * 2; i++)
+        for (unsigned int i(0); i < KP2.size() * 2; i++)
         {
-          for (uint j(0); j < rows * 2; j++)
+          for (unsigned int j(0); j < rows * 2; j++)
           {
             jacobians[0][i * rows * 2 + j] = Jdata[i * rows * 2 + j];
           }
         }
-        for (uint i(0); i < KP2.size(); i++)
+        for (unsigned int i(0); i < KP2.size(); i++)
         {
-          for (uint j(0); j < rows * 2; j++)
+          for (unsigned int j(0); j < rows * 2; j++)
           {
             jacobians[0][i * rows * 2 + j] = Jdata[i * rows * 2 + j];
             jacobians[0][(i + KP2.size()) * rows * 2 + j] =
@@ -317,10 +316,10 @@ namespace Warps
     this->bbs.vmax = vmax;
     this->bbs.nptsv = _NumberOfControlPointsV;
     this->bbs.valdim = valdim;
-    uint rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
-    double X[rows];
-    double Y[rows];
-    uint us(0);
+    unsigned int rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
+    std::vector<double> X(rows);
+    std::vector<double> Y(rows);
+    unsigned int us(0);
     for (int i(0); i < bbs.nptsu; i++)
     {
       for (int j(0); j < bbs.nptsv; j++)
@@ -370,7 +369,7 @@ namespace Warps
                             double **jacobians) const
   {
     {
-      const uint rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
+      const unsigned int rows(_NumberOfControlPointsU * _NumberOfControlPointsV);
 
       Eigen::Map<
           const Eigen::Matrix<
@@ -379,7 +378,7 @@ namespace Warps
           ControlPoints(parameters[0]);
 
       BBS::bbs_t b(bbs);
-      double Array[ControlPoints.rows() * 2];
+      std::vector<double> Array(ControlPoints.rows() * 2);
 
       for (int n = 0; n < 2; ++n)
       {
@@ -395,9 +394,9 @@ namespace Warps
           double, _NumberOfControlPointsU * _NumberOfControlPointsV * 4, 1>>
           ResidualSchwarzian(&residuals[0]);
 
-      double X[rows];
-      double Y[rows];
-      uint us(0);
+      std::vector<double> X(rows);
+      std::vector<double>  Y(rows);
+      unsigned int us(0);
       for (int i(0); i < bbs.nptsu; i++)
       {
         for (int j(0); j < bbs.nptsv; j++)
@@ -479,7 +478,7 @@ namespace Warps
               xydv1.col(1);
           A = A1.asDiagonal() * A21;
         });
-        std::thread j2([&xydu2, &xydudv, &xydv2, &B, &B21] {
+        std::thread j2([&xydu2, &xydudv, &xydv2, &B, &B21,&rows] {
           Eigen::MatrixXd B1(6 * rows, 1);
           B1 << xydu2.block(0, 0, rows, 1),
               xydu2.block(0, 1, rows, 1), xydudv.block(0, 0, rows, 1),
@@ -523,9 +522,9 @@ namespace Warps
         Jacobians << lambda * jI, lambda * jJ, lambda * jM, lambda * jN;
 
         Eigen::SparseMatrix<double> S = Jacobians.sparseView();
-        for (uint i(0); i < 4 * rows; i++)
+        for (unsigned int i(0); i < 4 * rows; i++)
         {
-          for (uint j(0); j < rows * 2; j++)
+          for (unsigned int j(0); j < rows * 2; j++)
           {
             jacobians[0][i * rows * 2 + j] = 0;
           }

@@ -44,9 +44,9 @@ namespace defSLAM
     bool repeated[3] = {false, false, false};
     for (auto edg : template_->getEdges())
     {
-      repeated[0] = repeated[0] or edg->isEqual(v1, v2);
-      repeated[1] = repeated[1] or edg->isEqual(v2, v3);
-      repeated[2] = repeated[2] or edg->isEqual(v1, v3);
+      repeated[0] = repeated[0] || edg->isEqual(v1, v2);
+      repeated[1] = repeated[1] || edg->isEqual(v2, v3);
+      repeated[2] = repeated[2] || edg->isEqual(v1, v3);
     }
     if (!repeated[0])
       new Edge(v1, v2, this, temp);
@@ -137,7 +137,7 @@ namespace defSLAM
     cv::projectPoints(Nodes3d, RotVect, transMat, mK, cv::noArray(), Nodes2d);
 
     bool IsIn(true);
-    uint i(0);
+    unsigned int i(0);
     std::map<Node *, cv::Point> points;
     for (std::set<Node *>::iterator itn = Nodes.begin(); itn != Nodes.end();
          itn++)

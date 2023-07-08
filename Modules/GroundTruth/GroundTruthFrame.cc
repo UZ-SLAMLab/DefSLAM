@@ -111,7 +111,8 @@ namespace defSLAM
         imDepth(imDepth.clone())
   {
     // Not to use stereo to initialize
-    this->StereoAvailable = (false);
+      this->StereoAvailable = (false);
+      
   }
   /*****
    * Estimate3DScale. This method estimates the 3D groundtruth of the
@@ -201,7 +202,7 @@ namespace defSLAM
       posStereo_.reserve(posStereoInit_.size());
       if (notOutliers.size() < 20)
         return 1;
-      for (uint i(0); i < notOutliers.size(); i++)
+      for (unsigned int i(0); i < notOutliers.size(); i++)
       {
         posMono_.push_back(posMonoInit_[notOutliers[i]]);
         posStereo_.push_back(posStereoInit_[notOutliers[i]]);
@@ -230,7 +231,7 @@ namespace defSLAM
    * and the scaled monocular map point. It also saves the results into a txt 
    * file
   */
-  double GroundTruthFrame::Estimate3DError(Map *map, const double &s)
+  double GroundTruthFrame::Estimate3DError(Map *map, const double &s, string output_path)
   {
     std::vector<float> Error;
     Error.reserve(posMono_.size());
@@ -257,8 +258,9 @@ namespace defSLAM
               << posMono_.size() << std::endl;
     std::ostringstream out;
     out << std::internal << std::setfill('0') << std::setw(5)
-        << uint(this->mTimeStamp);
-    std::string name("ErrorGTs" + out.str() + ".txt");
+        << (unsigned int)(this->mTimeStamp);
+    std::string name(output_path + "/ErrorGTs" + out.str() + ".txt");
+    cout << "GT NAME: " << name << endl;
     GroundTruthTools::saveResults(Error, name);
     return acc * invc;
   }
